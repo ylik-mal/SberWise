@@ -1,1 +1,1 @@
-# SberSplit
+# SberWise
