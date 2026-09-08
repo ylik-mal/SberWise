@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>СберСплит — Комнаты и Домашний Бюджет</title>
+  
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN with Custom Theme -->
+  <script async src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            dark: {
+              bg: '#0B0F19',
+              shell: '#0E1422',
+              card: '#151D2E',
+              cardHover: '#1B263C',
+              border: '#222E46',
+              input: '#121A2A',
+            },
+            mint: {
+              300: '#5EEAD4',
+              400: '#2DD4BF',
+              500: '#00E599',
+              600: '#00D29D',
+              900: '#06281E',
+            },
+            cyan: {
+              400: '#38BDF8',
+              500: '#0EA5E9',
+              600: '#00A3FF',
+            },
+            amber: {
+              400: '#FBBF24',
+              500: '#F59E0B',
+              900: '#1E1B0E',
+            },
+            indigo: {
+              400: '#818CF8',
+              500: '#6366F1',
+              600: '#5B50E6',
+            },
+            coral: {
+              400: '#F87171',
+              500: '#EF4444',
+            }
+          },
+          boxShadow: {
+            card: '0 4px 16px rgba(0, 0, 0, 0.25)',
+            glowMint: '0 0 24px rgba(0, 229, 153, 0.25)',
+            glowAmber: '0 0 24px rgba(245, 158, 11, 0.25)',
+            sheet: '0 -10px 30px rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script async src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js -->
+  <script async src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css?v=20260907-room-detail-icon-v1">
+  <style id="criticalStartupStyles">
+    #mainContent[hidden], #bottomNav[hidden] { display: none !important; }
+    #splashScreen.is-hidden { display: none !important; }
+    body.startup-pending #mainContent,
+    body.startup-pending #bottomNav { display: none !important; }
+    body.startup-pending #splashScreen { position: absolute; inset: 0; z-index: 80; display: flex; min-height: 100dvh; align-items: center; justify-content: center; overflow: hidden; padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 20px); background: radial-gradient(circle at 50% 42%, #0b4b44 0%, #03171b 42%, #020d14 100%); color: #fff; font-family: Arial, sans-serif; }
+    body.startup-pending #splashScreen .splash-content { display: flex; flex-direction: column; align-items: center; width: 100%; text-align: center; }
+    body.startup-pending #splashScreen .splash-logo { display: flex; width: 120px; height: 120px; align-items: center; justify-content: center; border: 2px solid #00e5a0; border-radius: 32px; background: #083532; color: #00e5a0; }
+    body.startup-pending #splashScreen .splash-logo svg { width: 64px; height: 64px; }
+    body.startup-pending #splashScreen .splash-brand { margin: 24px 0 0; color: #fff; font-size: 48px; font-weight: 800; line-height: 1; }
+    body.startup-pending #splashScreen .splash-brand em { color: #00e5a0; font-style: normal; }
+    body.startup-pending #splashScreen .splash-subtitle { margin: 14px 0 0; color: #a7c7d8; font-size: 17px; }
+    body.startup-pending #splashScreen .splash-progress-track { width: min(100%, 600px); height: 14px; margin-top: 52px; overflow: hidden; border: 2px solid #4d7d80; border-radius: 999px; background: #07242b; }
+    body.startup-pending #splashScreen .splash-progress-bar { width: 0; height: 100%; border-radius: inherit; background: #00e5a0; }
+    body.startup-pending #splashScreen .splash-status { margin: 18px 0 0; color: #a7c7d8; font-size: 16px; }
+  </style>
+</head>
+<body class="startup-pending bg-[#0B0F19] font-sans antialiased text-slate-100 select-none">
+  <!-- App Shell Container -->
+  <div class="flex h-full min-h-[100dvh] w-full items-center justify-center sm:p-5">
+    <div id="appShell" class="relative h-[100dvh] min-h-[100dvh] sm:h-[min(900px,calc(100vh-40px))] w-full max-w-full sm:max-w-[480px] overflow-hidden bg-[#0E1422] sm:rounded-[36px] sm:border sm:border-[#222E46] sm:shadow-2xl flex flex-col">
+      
+      <!-- Global Error Banner (Section 25) -->
+      <section id="splashScreen" class="splash-screen" aria-live="polite">
+        <div class="splash-decoration splash-decoration-chart" aria-hidden="true"></div>
+        <div class="splash-decoration splash-decoration-ruble" aria-hidden="true">₽</div>
+        <div class="splash-orbit splash-orbit-left" aria-hidden="true"></div>
+        <div class="splash-orbit splash-orbit-right" aria-hidden="true"></div>
+        <div class="splash-content">
+          <div class="splash-logo"><i data-lucide="sparkles"></i></div>
+          <h1 class="splash-brand"><span>Sber</span><em>Wise</em></h1>
+          <p class="splash-subtitle">ваш умный помощник по бюджету</p>
+          <div class="splash-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="splashProgressBar" class="splash-progress-bar"></div>
+          </div>
+          <p id="splashStatus" class="splash-status">Запускаем SberWise…</p>
+          <button id="splashRetry" type="button" class="splash-retry hidden">Повторить попытку</button>
+        </div>
+      </section>
+
+      <div id="globalErrorBanner" class="absolute top-2 left-2 right-2 z-50 p-3 rounded-xl bg-rose-950/90 border border-rose-700 text-rose-200 text-xs flex items-center justify-between shadow-lg hidden">
+        <div class="flex items-center gap-2">
+          <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i>
+          <span id="globalErrorText">Произошла ошибка</span>
+        </div>
+        <button type="button" onclick="location.reload()" class="px-2 py-1 rounded bg-rose-800 text-white font-bold text-[10px]">
+          Перезагрузить
+        </button>
+      </div>
+
+      <!-- Network Recovery Overlay (Sections 24, 47) -->
+      <div id="networkRecoveryOverlay" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0E1422]/95 backdrop-blur-md p-6 text-center hidden">
+        <div class="h-14 w-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mb-4">
+          <i data-lucide="wifi-off" class="w-7 h-7"></i>
+        </div>
+        <h3 id="networkRecoveryTitle" class="text-base font-extrabold text-white">Не удалось подключиться к серверу</h3>
+        <p id="networkRecoveryMessage" class="text-xs text-slate-400 mt-2 max-w-[280px]">
+          Проверьте подключение к интернету. Если сервер только запускается, повторите попытку через несколько секунд.
+        </p>
+        <button type="button" id="btnRetryNetwork" class="mt-6 px-6 py-3 rounded-2xl bg-[#00D29D] text-[#06281E] text-xs font-black shadow-glowMint hover:bg-[#00E599] transition-all active:scale-95 flex items-center gap-2">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          Повторить попытку
+        </button>
+      </div>
+
+      <!-- Main Scrollable Area -->
+        <main id="mainContent" class="no-scrollbar flex-1 overflow-y-auto pb-28 hidden" hidden style="display:none">
+        
+        <!-- SCREEN 1: ОБЗОР КОМНАТЫ -->
+        <section id="screen-overview" class="screen-pane">
+          <div class="fintech-decorations" aria-hidden="true">
+            <span class="finance-motif finance-motif-chart"></span>
+            <span class="finance-motif finance-motif-check">✓</span>
+            <span class="finance-motif finance-motif-ruble">₽</span>
+            <span class="finance-motif finance-motif-pie"></span>
+            <span class="finance-orbit finance-orbit-one"></span>
+            <span class="finance-orbit finance-orbit-two"></span>
+          </div>
+          <!-- Header -->
+          <header class="overview-header flex items-center justify-between px-5 pb-5 pt-[max(22px,env(safe-area-inset-top))]">
+            <div class="flex items-center gap-3">
+              <div class="overview-logo h-12 w-12 rounded-[18px] border border-[#222E46] bg-[#151D2E] flex items-center justify-center shadow-card text-mint-500">
+                <i data-lucide="sparkles" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="screen-brand" aria-label="SberWise"><span>Sber</span><em>Wise</em></p>
+                <button type="button" id="btnGroupSelector" class="inline-flex items-center gap-1.5 hover:opacity-80 active:scale-95 transition-all text-left group">
+                  <h1 id="headerTitle" class="text-lg font-extrabold tracking-[-0.03em] text-white truncate max-w-[190px]">Комната</h1>
+                  <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-hover:text-mint-400 transition-colors shrink-0"></i>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" id="btnBell" class="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-colors" aria-label="Уведомления">
+                <i data-lucide="bell" class="w-4 h-4"></i>
+                <span id="bellDot" class="hidden" aria-live="polite"></span>
+              </button>
+              <button type="button" id="btnOpenSettings" class="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-colors" aria-label="Настройки">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </header>
+
+          <!-- Hero Room Monthly Spend Card -->
+          <div class="overview-section-pad">
+            <div class="overview-budget-card rounded-[28px] bg-gradient-to-br from-[#182338] to-[#121A2A] p-6 text-white shadow-card border border-[#2A3956] relative overflow-hidden">
+              <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-mint-500/10 rounded-full blur-2xl pointer-events-none"></div>
+              <div class="flex items-start justify-between gap-4 relative z-10">
+                <div>
+                  <div class="flex items-center gap-2">
+                  <p class="text-sm font-semibold text-slate-300">Расходы в комнате</p>
+                    <span id="overviewRoomTypeBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#24334D] text-slate-200">Длительная</span>
+                  </div>
+                  <p id="overviewTotalSpent" class="mt-2 text-[42px] leading-none font-black tracking-[-0.05em] text-white">— ₽</p>
+                </div>
+                <div class="h-11 w-11 rounded-2xl bg-[#223048] flex items-center justify-center text-mint-400 border border-[#2E4162]">
+                  <i data-lucide="wallet-cards" class="w-6 h-6"></i>
+                </div>
+              </div>
+              
+              <!-- Progress Bar -->
+              <div class="mt-7 h-2.5 w-full overflow-hidden rounded-full bg-[#202C42]">
+                <div id="overviewBudgetBar" class="overview-budget-fill" style="width: 0%" aria-label="Использовано бюджета"></div>
+              </div>
+              
+              <div class="mt-3 flex justify-between text-sm text-slate-300 font-medium">
+                <span id="overviewRemaining">Загрузка...</span>
+                <span id="overviewBudgetRatio">Загрузка бюджета...</span>
+              </div>
+
+              <!-- Sber Alternative Scoring Badge inside Hero -->
+              <div id="sberScoringHeroBadge" class="mt-5 pt-4 border-t border-[#25354F] flex items-center justify-between text-sm">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-mint-400 font-bold flex items-center gap-1">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-mint-400"></i>
+                    СберСкоринг:
+                  </span>
+                  <span id="heroScoringGrade" class="px-2 py-0.5 rounded-full bg-mint-500/20 text-mint-300 font-black text-[11px] border border-mint-500/30">820 (AAA)</span>
+                </div>
+                <span class="text-[11px] text-slate-400 font-medium">Высокая надёжность</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Personal debt overview for the current participant -->
+          <div class="overview-section-pad mt-3">
+            <div id="overviewPersonalDebtCard" class="overview-settlement-card rounded-[26px] bg-[#151D2E] p-5 shadow-card border border-[#222E46] flex items-center justify-between hover:border-mint-500/40 transition-all cursor-pointer" onclick="openPersonalDebtOverview()">
+              <div id="overviewPersonalDebtInfo" class="flex items-center gap-3.5">
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#10242B] text-mint-400 border border-[#164E43]">
+                  <i data-lucide="wallet" class="w-5 h-5"></i>
+                </span>
+                <div>
+                  <div class="overview-personal-debt-heading flex items-center gap-1.5">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Ваши расчёты</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#00D29D]/20 text-[#00E599] border border-[#00D29D]/30">Личные</span>
+                  </div>
+                  <p id="overviewPersonalDebtText" class="text-xs font-black text-white mt-0.5">Загружаем ваши долги...</p>
+                </div>
+              </div>
+              <button id="btnOpenPersonalDebt" type="button" class="rounded-xl bg-[#00D29D] px-3.5 py-2 text-xs font-black text-[#06281E] shadow-sm hover:bg-mint-500 active:scale-95 transition-all flex items-center gap-1">
+                <span class="personal-debt-button-long">Мои долги</span><span class="personal-debt-button-short">Долги</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Add Expense Banner -->
+          <div class="overview-section-pad mt-3">
+            <button type="button" id="bannerBotAction" class="overview-add-card flex w-full items-center gap-4 rounded-[26px] border border-[#222E46] bg-[#151D2E] px-5 py-5 text-left transition-all active:scale-[0.99] hover:bg-[#1A253A] hover:border-cyan-500/40">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 shadow-sm">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+              </span>
+              <span class="min-w-0 flex-1">
+                <span class="block text-sm font-extrabold text-white">Внести расход в комнату</span>
+                <span class="block truncate text-xs text-slate-400">Чек, голос, текст или вручную</span>
+              </span>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 shrink-0"></i>
+            </button>
+          </div>
+
+          <!-- Spending Donut Card (На что тратим) -->
+          <div id="overviewSpendingSection" class="overview-section-pad mt-3">
+            <div class="overview-category-card rounded-[28px] bg-[#151D2E] p-5 shadow-card border border-[#222E46]">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-extrabold text-white">На что тратим</h2>
+                <button type="button" class="nav-to-analytics flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300">
+                  Подробнее <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+              <div class="grid grid-cols-[150px_1fr] items-center gap-5 py-1">
+                <div class="overview-donut-stage mx-auto">
+                  <canvas id="overviewDonutChart" class="overview-donut-canvas" width="150" height="150" aria-label="Распределение расходов по категориям"></canvas>
+                  <div class="overview-donut-center pointer-events-none">
+                    <span>Всего</span>
+                    <strong id="donutCenterTotal">0 ₽</strong>
+                    <i></i>
+                  </div>
+                </div>
+                <div id="overviewTopCategories" class="space-y-2.5 min-w-0">
+                  <p class="text-xs text-slate-400">Нет расходов в этом месяце</p>
+                </div>
+              </div>
+              <div id="roomDonutDetail" class="room-donut-detail" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <!-- AI recommendations for the currently selected room -->
+          <div id="overviewAiRecommendationsSection" class="overview-section-pad mt-3">
+            <article class="overview-ai-card">
+              <div class="overview-ai-card-head">
+                <span class="overview-ai-icon"><i data-lucide="sparkles"></i></span>
+                <div class="min-w-0 flex-1">
+                  <h2>AI-рекомендации</h2>
+                  <p>Анализ расходов текущей комнаты</p>
+                </div>
+                <button type="button" class="nav-to-analytics overview-ai-link">Подробнее</button>
+              </div>
+              <div class="overview-ai-tip">
+                <div class="overview-ai-tip-copy">
+                  <strong id="overviewAiRecommendationTitle">Анализируем расходы…</strong>
+                  <p id="overviewAiRecommendationText">Совет появится после загрузки данных комнаты.</p>
+                </div>
+                <div class="overview-ai-carousel-controls">
+                  <button type="button" id="btnOverviewAiPrevious" class="overview-ai-arrow" aria-label="Предыдущая рекомендация"><i data-lucide="chevron-left"></i></button>
+                  <span id="overviewAiRecommendationPosition" class="overview-ai-position">1 из 1</span>
+                  <button type="button" id="btnOverviewAiNext" class="overview-ai-arrow" aria-label="Следующая рекомендация"><i data-lucide="chevron-right"></i></button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- Recent Transactions -->
+          <div class="overview-section-pad overview-purchases-section mt-3">
+            <div class="mb-2 flex items-center justify-between px-1">
+              <h2 class="text-xl font-extrabold text-white">Покупки в комнате</h2>
+              <button type="button" class="nav-to-history text-xs font-semibold text-cyan-400 hover:text-cyan-300">Все</button>
+            </div>
+            <div id="overviewRecentList" class="overview-purchases-list divide-y divide-[#1D273B] rounded-[26px] bg-[#151D2E] p-2 shadow-card border border-[#222E46]">
+              <div class="p-4 text-center text-xs text-slate-400">Загрузка расходов...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCREEN 2: ИСТОРИЯ -->
+        <section id="screen-history" class="screen-pane history-screen hidden">
+          <div class="fintech-decorations history-decorations" aria-hidden="true">
+            <span class="finance-motif finance-motif-chart history-motif-chart"></span>
+            <span class="finance-motif finance-motif-check history-motif-check">✓</span>
+            <span class="finance-motif finance-motif-ruble history-motif-ruble">₽</span>
+            <span class="finance-motif finance-motif-pie history-motif-pie"></span>
+            <span class="finance-orbit history-orbit-one"></span>
+            <span class="finance-orbit history-orbit-two"></span>
+          </div>
+
+          <header class="history-header">
+            <div class="min-w-0">
+              <p class="screen-brand" aria-label="SberWise"><span>Sber</span><em>Wise</em></p>
+              <h1 class="history-title">История</h1>
+              <p id="historySubtitle" class="history-summary">0 покупок · 0 ₽</p>
+            </div>
+            <button type="button" id="btnHistoryDate" class="history-calendar" aria-label="Выбрать дату">
+              <i data-lucide="calendar-days"></i>
+            </button>
+            <input id="historyDateInput" class="history-date-input" type="date" tabindex="-1" aria-label="Дата покупок">
+          </header>
+
+          <div class="history-controls">
+            <label class="history-search">
+              <i data-lucide="search" class="history-search-icon"></i>
+              <input id="historySearchInput" type="text" placeholder="Найти покупку или участника" class="history-search-input">
+            </label>
+
+            <div id="historyCategoryPills" class="history-category-pills no-scrollbar">
+              <button type="button" data-category="all" class="cat-pill active">Все</button>
+              <button type="button" data-category="Продукты" class="cat-pill">Продукты</button>
+              <button type="button" data-category="Транспорт" class="cat-pill">Транспорт</button>
+              <button type="button" data-category="Жильё" class="cat-pill">Жильё</button>
+              <button type="button" data-category="Кафе" class="cat-pill">Кафе</button>
+              <button type="button" data-category="Развлечения" class="cat-pill">Развлечения</button>
+              <button type="button" data-category="Аптека" class="cat-pill">Аптека</button>
+              <button type="button" data-category="Другое" class="cat-pill">Другое</button>
+            </div>
+          </div>
+
+          <div id="historyListContainer" class="history-list-container">
+            <div class="history-empty-state">
+              <p class="history-empty-title">Покупок пока нет</p>
+              <p class="history-empty-description">Добавьте первую покупку через кнопку «+» внизу</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCREEN 3: ПЛАН -->
+        <section id="screen-plan" class="screen-pane plan-screen hidden">
+          <div class="plan-decorations" aria-hidden="true">
+            <span class="plan-orbit plan-orbit-one"></span>
+            <span class="plan-orbit plan-orbit-two"></span>
+            <span class="plan-decor plan-decor-calendar"><i data-lucide="calendar-check-2"></i></span>
+            <span class="plan-decor plan-decor-piggy"><i data-lucide="piggy-bank"></i></span>
+            <span class="plan-decor plan-decor-chart"><i data-lucide="chart-no-axes-column-increasing"></i></span>
+            <span class="plan-dots"></span>
+          </div>
+          <header class="plan-header">
+            <div>
+              <p class="plan-eyebrow"><span>Sber</span><em>Wise</em></p>
+              <h1>План</h1>
+              <p>Спокойный месяц начинается с понятного бюджета</p>
+            </div>
+            <span class="plan-period"><i data-lucide="calendar-days"></i>Сентябрь</span>
+          </header>
+
+          <button type="button" id="btnPlanBudget" class="plan-hero-card">
+            <div class="plan-hero-icon"><i data-lucide="target"></i></div>
+            <div>
+              <p>План месяца</p>
+              <h2>Держите расходы под контролем</h2>
+              <span id="planBudgetSummary">Загрузка плана…</span>
+            </div>
+            <i class="plan-hero-arrow" data-lucide="arrow-up-right"></i>
+          </button>
+
+          <div class="plan-cards">
+            <button type="button" id="btnPlanCategoryBudget" class="plan-card">
+              <span class="plan-card-icon"><i data-lucide="sliders-horizontal"></i></span>
+              <div><h2>Лимиты категорий</h2><p id="planCategorySummary">Загрузка…</p></div>
+              <i data-lucide="chevron-right"></i>
+            </button>
+            <button type="button" id="btnPlanRecurring" class="plan-card">
+              <span class="plan-card-icon plan-card-icon--blue"><i data-lucide="repeat-2"></i></span>
+              <div><h2>Регулярные расходы</h2><p id="planRecurringSummary">Загрузка…</p></div>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+
+          <article id="planTipCard" class="plan-tip-card">
+            <span><i data-lucide="sparkles"></i></span>
+            <div><strong id="planTipTitle">Умный планировщик</strong><p id="planTipText">Загрузка рекомендаций…</p></div>
+          </article>
+        </section>
+
+        <!-- SCREEN 4: АНАЛИТИКА -->
+        <section id="screen-analytics" class="screen-pane analytics-screen hidden">
+          <div class="fintech-decorations analytics-decorations" aria-hidden="true">
+            <span class="finance-motif finance-motif-chart history-motif-chart"></span>
+            <span class="finance-motif finance-motif-check history-motif-check">✓</span>
+            <span class="finance-motif finance-motif-ruble history-motif-ruble">₽</span>
+            <span class="finance-motif finance-motif-pie history-motif-pie"></span>
+            <span class="finance-orbit history-orbit-one"></span>
+            <span class="finance-orbit history-orbit-two"></span>
+          </div>
+          <header class="analytics-header">
+            <div class="analytics-heading">
+              <p class="screen-brand" aria-label="SberWise"><span>Sber</span><em>Wise</em></p>
+              <h1 class="analytics-title">Аналитика</h1>
+              <p id="analyticsSubtitle" class="analytics-subtitle">Сентябрь 2026</p>
+            </div>
+            <button type="button" id="btnOpenAnalyticsPeriod" class="analytics-period-button">
+              <i data-lucide="calendar" class="analytics-period-icon"></i>
+              <span id="analyticsPeriodButtonLabel">Сентябрь</span>
+              <i data-lucide="chevron-down" class="analytics-period-chevron"></i>
+            </button>
+          </header>
+
+          <div class="analytics-subtabs" role="tablist" aria-label="Раздел аналитики">
+            <button type="button" class="analytics-subtab active" data-analytics-view="overview">Обзор</button>
+            <button type="button" class="analytics-subtab" data-analytics-view="results">Итоги</button>
+          </div>
+          <div id="analyticsOverviewContent">
+
+          <div class="analytics-stat-grid">
+            <div class="analytics-stat-card">
+              <p class="analytics-stat-label">Средний чек</p>
+              <span id="analyticsAvgCheck" class="analytics-stat-value">0 ₽</span>
+              <p class="analytics-stat-note"><i data-lucide="check-circle-2"></i><span id="analyticsAvgNote">оптимально</span></p>
+            </div>
+            <div class="analytics-stat-card analytics-stat-card-accent">
+              <p class="analytics-stat-label">Кол-во покупок</p>
+              <span id="analyticsTxCount" class="analytics-stat-value">0</span>
+              <p id="analyticsTxCountNote" class="analytics-stat-note muted">за период</p>
+            </div>
+          </div>
+
+          <div class="analytics-section-wrap">
+            <div class="analytics-panel analytics-chart-card">
+              <div class="analytics-panel-heading">
+                <div><h2 id="analyticsTimelineTitle">Динамика по неделям</h2><p id="analyticsTimelineSubtitle">Распределение расходов</p></div>
+                <strong id="analyticsTotalBadge">0 ₽</strong>
+              </div>
+              <div class="analytics-chart-wrap"><canvas id="analyticsWeeklyChart"></canvas></div>
+            </div>
+          </div>
+
+          <div class="analytics-section-wrap">
+            <div class="analytics-panel analytics-categories-card">
+              <div class="analytics-panel-heading analytics-donut-heading">
+                <div><h2 class="analytics-categories-title">На что тратим</h2><p>Структура расходов за период</p></div>
+              </div>
+              <div class="analytics-donut-stage">
+                <canvas id="analyticsDonutChart" class="analytics-donut-canvas" aria-label="Распределение расходов по категориям"></canvas>
+                <div id="analyticsDonutSegmentIcons" class="analytics-donut-segment-icons" aria-hidden="true"></div>
+                <div class="analytics-donut-center" aria-live="polite">
+                  <span>Всего</span>
+                  <strong id="analyticsDonutTotal">0 ₽</strong>
+                  <i></i>
+                  <small id="analyticsDonutEmptyText" class="hidden">Пока нет расходов</small>
+                </div>
+              </div>
+              <div id="analyticsCategoriesList" class="analytics-categories-list">
+                <p class="analytics-empty-state">За выбранный период расходов нет</p>
+              </div>
+            </div>
+          </div>
+          </div>
+          <div id="analyticsResultsHost"></div>
+        </section>
+
+        <!-- SCREEN 5: КЕШБЕК (PREVIEW) -->
+        <section id="screen-cashback" class="screen-pane cashback-screen hidden">
+          <div class="fintech-decorations cashback-decorations" aria-hidden="true">
+            <span class="finance-motif finance-motif-check history-motif-check">✓</span>
+            <span class="finance-motif finance-motif-ruble history-motif-ruble">₽</span>
+            <span class="cashback-decor-percent">%</span>
+            <span class="cashback-decor-card"><i data-lucide="credit-card"></i></span>
+            <span class="cashback-decor-basket"><i data-lucide="shopping-basket"></i></span>
+            <span class="cashback-decor-pie"><i data-lucide="pie-chart"></i></span>
+            <span class="cashback-decor-dots"></span>
+            <span class="finance-orbit history-orbit-one"></span>
+          </div>
+          <header class="cashback-header">
+            <div>
+              <p class="cashback-eyebrow"><span>Sber</span><em>Wise</em></p>
+              <h1 class="cashback-title">Кешбек</h1>
+              <p class="cashback-subtitle">Подскажем, кому выгоднее оплатить покупку</p>
+            </div>
+            <span class="cashback-badge"><i data-lucide="sparkles"></i>В разработке</span>
+          </header>
+
+          <div class="cashback-preview" aria-label="Предпросмотр функции кешбека">
+            <div class="cashback-preview-label">ДЕМО-ПРЕДПРОСМОТР</div>
+            <div class="cashback-purchase-card">
+              <div><span class="cashback-muted-label">Покупка · 4 200 ₽</span><strong>Супермаркеты</strong></div>
+              <i data-lucide="shopping-basket"></i>
+            </div>
+            <div class="cashback-participants">
+              <div class="cashback-section-title">Кому выгоднее оплатить</div>
+              <div class="cashback-person"><span class="cashback-avatar">А</span><span>Анна</span><b>5%</b></div>
+              <div class="cashback-person"><span class="cashback-avatar">И</span><span>Илья</span><b>2%</b></div>
+              <div class="cashback-person best"><span class="cashback-avatar">М</span><span>Мария</span><b>7%</b></div>
+            </div>
+            <div class="cashback-recommendation"><div><span class="cashback-muted-label">Рекомендация</span><strong>Выгоднее оплатить Марии</strong><small>Ожидаемый кешбек · 294 ₽</small><small>+210 ₽ выгоды относительно минимального предложения</small></div><i data-lucide="badge-check"></i></div>
+            <div class="cashback-savings"><i data-lucide="piggy-bank"></i><div><span class="cashback-muted-label">Экономия для комнаты</span><strong class="cashback-metric-placeholder">Скоро появится</strong></div></div>
+            <div class="cashback-overlay"><i data-lucide="wrench"></i><strong>Функция в разработке</strong><span>SberWise скоро сможет анализировать кешбек участников и подсказывать, кому выгоднее оплачивать покупку, чтобы получать максимальную выгоду.</span><em>Скоро будет доступно</em></div>
+          </div>
+          <p class="cashback-footnote">Скоро SberWise сможет подсказывать, кому выгоднее оплачивать покупки с учётом категорий кешбека и предложений банков.</p>
+        </section>
+
+        <!-- SCREEN 4: БАЛАНС & ДОЛГИ (ИТОГИ) -->
+        <section id="screen-family" class="screen-pane results-screen hidden">
+          <div class="fintech-decorations results-decorations" aria-hidden="true">
+            <span class="finance-motif finance-motif-chart history-motif-chart"></span><span class="finance-motif finance-motif-check history-motif-check">✓</span><span class="finance-motif finance-motif-ruble history-motif-ruble">₽</span><span class="finance-motif finance-motif-pie history-motif-pie"></span><span class="finance-orbit history-orbit-one"></span><span class="finance-orbit history-orbit-two"></span>
+          </div>
+          <header class="results-header"><div><h1>Итоги <em>&amp;</em> Долги</h1><p id="familySubtitle">Взаиморасчёты и долговые обязательства</p></div><button type="button" id="btnOpenCreateDebt" class="results-add-debt"><i data-lucide="plus-circle"></i><span>+ Долг</span></button></header>
+          <div class="results-content">
+            <section class="results-settlement-card"><div class="results-settlement-top"><div><p>Оптимизация переводов комнаты</p><h2 id="familyDebtsStatus">Все рассчитались</h2></div><button type="button" id="btnGoToRoomSettlement">Итоги комнаты <i data-lucide="chevron-right"></i></button></div><p class="results-settlement-copy">Алгоритм СберСплита минимизирует количество банковских переводов между участниками до кратчайшего пути.</p><div id="familyDebtsList" class="results-summary-debts"></div></section>
+            <div class="results-stat-grid"><div class="results-stat-card owed"><span>Мне должны</span><i data-lucide="arrow-down-left"></i><strong id="debtsOwedToMeTotal">0 ₽</strong></div><div class="results-stat-card owing"><span>Я должен</span><i data-lucide="arrow-up-right"></i><strong id="debtsIOweTotal">0 ₽</strong></div></div>
+            <section class="results-debts-section"><div class="results-section-heading"><h2>Учёт долгов и напоминаний</h2><span id="debtsCountBadge">0 активных</span></div><div class="results-filter-tabs"><button type="button" class="debt-tab-btn active" data-debt-filter="all">Все</button><button type="button" class="debt-tab-btn" data-debt-filter="owed_to_me">Мне должны</button><button type="button" class="debt-tab-btn" data-debt-filter="i_owe">Я должен</button></div><div id="debtsListContainer"><div class="results-loading">Загрузка долгов...</div></div></section>
+            <section class="results-members-section"><div class="results-section-heading"><h2>Участники комнаты</h2><button type="button" id="btnInviteRoomMembers" class="text-xs font-black text-mint-400">+ Пригласить</button></div><div id="familyMembersList"><div class="results-loading">Загрузка участников...</div></div></section>
+          </div>
+        </section>
+
+        <!-- SCREEN 5: НАСТРОЙКИ -->
+        <section id="screen-settings" class="screen-pane hidden">
+          <header class="flex items-center gap-3 px-4 pb-4 pt-[max(18px,env(safe-area-inset-top))]">
+            <button type="button" id="btnBackFromSettings" class="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-transform active:scale-95" aria-label="Назад">
+              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+            <div>
+              <p class="screen-brand" aria-label="SberWise"><span>Sber</span><em>Wise</em></p>
+              <h1 class="text-[24px] font-extrabold tracking-[-0.03em] text-white">Настройки</h1>
+              <p class="text-sm text-slate-400">Параметры комнаты и профиль</p>
+            </div>
+          </header>
+
+          <div class="mx-4 rounded-[24px] bg-[#151D2E] p-4 shadow-card border border-[#222E46]">
+            <div class="flex items-center gap-3">
+              <div id="settingsUserAvatar" class="h-12 w-12 rounded-2xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center font-black text-base shadow-sm">
+                Я
+              </div>
+              <div class="min-w-0 flex-1">
+                <p id="settingsUserName" class="font-bold text-white">Пользователь</p>
+                <p id="settingsUserRole" class="truncate text-xs text-slate-400">Участник сплит-комнаты</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-mint-500/20 text-mint-400 border border-mint-500/30 font-bold text-xs">Активен</span>
+            </div>
+          </div>
+
+          <div class="mt-5 px-4">
+            <h2 class="mb-2 px-1 text-sm font-extrabold text-white">Лимит расходов комнаты</h2>
+            <div class="rounded-[24px] bg-[#151D2E] p-4 shadow-card border border-[#222E46]">
+              <label class="text-xs font-semibold text-slate-400" for="inputBudgetLimit">Лимит на период (₽)</label>
+              <div class="mt-2 flex gap-2">
+                <div class="flex min-w-0 flex-1 items-center rounded-xl border border-[#222E46] bg-[#0E1422] px-3 focus-within:border-cyan-500/60">
+                  <input id="inputBudgetLimit" type="number" inputmode="numeric" value="100000" class="min-w-0 flex-1 py-2.5 text-base font-black text-white bg-transparent outline-none">
+                  <span class="text-sm text-slate-400 font-bold">₽</span>
+                </div>
+                <button type="button" id="btnSaveBudgetLimit" class="rounded-xl bg-[#00D29D] px-4 text-sm font-black text-[#06281E] shadow-sm hover:bg-mint-500 transition-transform active:scale-95">
+                  Сохранить
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 px-4">
+            <h2 class="mb-2 px-1 text-sm font-extrabold text-white">Управление комнатой</h2>
+            <div class="rounded-[24px] bg-[#151D2E] p-4 shadow-card border border-[#222E46] space-y-3">
+              <div>
+                <h3 class="text-sm font-bold text-white">Завершить и закрыть комнату</h3>
+                <p class="text-xs text-slate-400 mt-0.5">
+                  Фиксирует финальный расчёт и переводит комнату в архив.
+                </p>
+                <button type="button" id="btnArchiveRoomSettings" class="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1E293B] border border-[#334155] px-4 py-2.5 text-xs font-bold text-slate-200 transition-colors hover:bg-[#28354A]">
+                  <i data-lucide="archive" class="w-4 h-4"></i> Зафиксировать итоги и архивировать
+                </button>
+              </div>
+              <div id="roomDeleteSection" class="hidden border-t border-rose-500/20 pt-3">
+                <h3 class="text-sm font-bold text-rose-300">Удалить комнату</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Удалит данные комнаты без возможности восстановления.</p>
+                <button type="button" id="btnOpenDeleteRoom" class="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl border border-rose-500/45 bg-rose-500/10 px-4 py-2.5 text-xs font-black text-rose-300"><i data-lucide="trash-2" class="w-4 h-4"></i> Удалить комнату</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- FULL-SCREEN INPUT MODES CONTAINER -->
+      <div id="inputScreensContainer" class="absolute inset-0 z-40 bg-[#0E1422] flex flex-col hidden">
+        
+        <!-- 1: MANUAL EXPENSE (Вручную) -->
+        <section id="screen-manual-input" class="input-mode-screen flex flex-col h-full w-full hidden">
+          <!-- Header -->
+          <div class="flex-shrink-0 flex items-center justify-between px-4 py-3.5 border-b border-[#222E46] bg-[#0E1422] pt-[max(14px,env(safe-area-inset-top))]">
+            <button type="button" class="btn-back-input flex h-9 w-9 items-center justify-center rounded-xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-all active:scale-95" aria-label="Назад">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <div class="text-center flex-1 px-2 min-w-0">
+              <h2 class="text-sm sm:text-base font-extrabold text-white truncate">Вручную в комнату</h2>
+              <p class="text-[11px] text-slate-400 truncate">Сумма, категория, распределение</p>
+            </div>
+            <div class="w-9"></div>
+          </div>
+
+          <!-- Scrollable Body -->
+          <div class="flex-1 overflow-y-auto overflow-x-hidden min-w-0 p-4 space-y-4 no-scrollbar">
+            <div>
+              <label class="text-xs font-semibold text-slate-400 block mb-1">Сумма покупки (₽)</label>
+              <div class="flex items-center rounded-xl border border-[#222E46] bg-[#151D2E] px-3.5 focus-within:border-cyan-500/60 transition-all">
+                <input id="addExpenseAmount" type="number" inputmode="decimal" placeholder="0" class="w-full bg-transparent py-3 text-xl font-black text-white outline-none">
+                <span class="text-base font-bold text-slate-400">₽</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-slate-400 block mb-1">Категория</label>
+              <select id="addExpenseCategory" class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] px-3 py-2.5 text-sm font-semibold text-white outline-none focus:border-cyan-500/60 transition-all">
+                <option value="🍞 Продукты">Продукты</option>
+                <option value="🚗 Транспорт">Транспорт</option>
+                <option value="🏠 Жильё">Жильё</option>
+                <option value="☕ Кафе">Кафе</option>
+                <option value="🎉 Развлечения">Развлечения</option>
+                <option value="💊 Аптека">Аптека</option>
+                <option value="🔧 Другое">Другое</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-slate-400 block mb-1">Описание (название товара)</label>
+              <input id="addExpenseDescription" type="text" placeholder="Например: Сыр, кофе, такси..." class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] px-3.5 py-2.5 text-sm text-white outline-none focus:border-cyan-500/60 transition-all">
+            </div>
+
+            <div class="flex items-center justify-between rounded-xl bg-[#151D2E] p-3 border border-[#222E46]">
+              <div class="flex items-center gap-2.5">
+                <span class="h-8 w-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                  <i data-lucide="user" class="w-4 h-4"></i>
+                </span>
+                <div>
+                  <p class="text-xs font-bold text-white">Личный расход</p>
+                  <p class="text-[11px] text-slate-400">Не делить сумму на комнату</p>
+                </div>
+              </div>
+              <input id="addExpenseIsPersonal" type="checkbox" class="h-5 w-5 rounded border-slate-600 bg-transparent text-cyan-500">
+            </div>
+          </div>
+
+          <!-- Bottom Sticky Action Bar -->
+          <div class="flex-shrink-0 p-4 border-t border-[#222E46] bg-[#0E1422]/95 backdrop-blur pb-[max(16px,env(safe-area-inset-bottom))]">
+            <button type="button" id="btnSubmitExpense" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3.5 text-sm font-black text-[#06281E] shadow-glowMint transition-transform active:scale-[0.98]">
+              <i data-lucide="check" class="w-4 h-4"></i> Записать покупку
+            </button>
+          </div>
+        </section>
+
+        <!-- 2: TEXT INPUT (AI) -->
+        <section id="screen-text-input" class="input-mode-screen flex flex-col h-full w-full hidden">
+          <!-- Header -->
+          <div class="flex-shrink-0 flex items-center justify-between px-4 py-3.5 border-b border-[#222E46] bg-[#0E1422] pt-[max(14px,env(safe-area-inset-top))]">
+            <button type="button" class="btn-back-input flex h-9 w-9 items-center justify-center rounded-xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-all active:scale-95" aria-label="Назад">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <div class="text-center flex-1 px-2 min-w-0">
+              <h2 class="text-sm sm:text-base font-extrabold text-white truncate">Текстовый ввод</h2>
+              <p class="text-[11px] text-slate-400 truncate">Распознавание списков и чатов</p>
+            </div>
+            <button type="button" id="btnPasteFromClipboard" class="text-xs font-extrabold text-cyan-400 hover:text-cyan-300 transition-colors px-2.5 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 active:scale-95">
+              Вставить
+            </button>
+          </div>
+
+          <!-- Scrollable Body -->
+          <div class="flex-1 overflow-y-auto overflow-x-hidden min-w-0 p-4 space-y-4 no-scrollbar">
+            <p class="text-xs text-slate-400">Вставьте сообщение из мессенджера или список покупок</p>
+            
+            <!-- Textarea Card -->
+            <div class="rounded-2xl border border-[#222E46] bg-[#151D2E] p-3.5">
+              <textarea id="rawExpenseTextInput" rows="5" class="w-full bg-transparent text-xs leading-relaxed text-slate-200 placeholder:text-slate-500 outline-none font-mono resize-none" placeholder="Вставьте сообщение или список покупок"></textarea>
+            </div>
+
+            <!-- Распознано участников -->
+            <div>
+              <div class="flex items-center justify-between mb-2 text-xs px-1">
+                <span class="font-bold text-slate-400">Распознано участников:</span>
+                <span id="textParsedMembersCount" class="font-extrabold text-mint-400">—</span>
+              </div>
+              <div id="textParsedPillsContainer" class="flex flex-wrap gap-2">
+                <span class="px-3 py-1.5 rounded-xl bg-[#1E293B] border border-[#334155] text-xs font-semibold text-slate-400">Участники появятся после распознавания</span>
+              </div>
+            </div>
+
+            <!-- Summary Box -->
+            <div class="rounded-2xl bg-[#151D2E] border border-[#222E46] p-4 space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-400">Итого сумма по чеку:</span>
+                <span id="textTotalAmountDisplay" class="font-black text-white text-sm">—</span>
+              </div>
+              <div class="flex items-center justify-between text-xs pt-1 border-t border-[#222E46]">
+                <span class="text-slate-400">Кто оплатил:</span>
+                <span id="textPayerDisplay" class="font-extrabold text-mint-400">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Sticky Action Bar -->
+          <div class="flex-shrink-0 p-4 border-t border-[#222E46] bg-[#0E1422]/95 backdrop-blur pb-[max(16px,env(safe-area-inset-bottom))]">
+            <button type="button" id="btnParseTextSubmit" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#00A3FF] py-3.5 text-sm font-black text-white shadow-lg transition-all hover:bg-[#1DAEFF] active:scale-95">
+              <i data-lucide="zap" class="w-4 h-4"></i>
+              Рассчитать чек
+            </button>
+          </div>
+        </section>
+
+        <!-- 3: VOICE INPUT (WHISPER AI) -->
+        <section id="screen-voice-input" class="input-mode-screen flex flex-col h-full w-full hidden">
+          <!-- Header -->
+          <div class="flex-shrink-0 flex items-center justify-between px-4 py-3.5 border-b border-[#222E46] bg-[#0E1422] pt-[max(14px,env(safe-area-inset-top))]">
+            <div class="flex items-center gap-2.5">
+              <button type="button" class="btn-back-input flex h-9 w-9 items-center justify-center rounded-xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-all active:scale-95" aria-label="Назад">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              </button>
+              <div>
+                <h2 class="text-sm sm:text-base font-extrabold text-white">Голосовой ввод</h2>
+                <p id="voiceHeaderSub" class="text-[11px] text-slate-400">Whisper AI · Речь в сплит</p>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-lg text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">Whisper AI</span>
+          </div>
+
+          <!-- Scrollable Body -->
+          <div class="flex-1 overflow-y-auto overflow-x-hidden min-w-0 p-4 space-y-4 no-scrollbar">
+
+            <!-- STATE 1: IDLE (Initial State) -->
+            <div id="voiceStateIdle" class="space-y-4">
+              <div class="rounded-[24px] bg-[#151D2E] border border-[#222E46] p-6 text-center space-y-4">
+                <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mx-auto">
+                  <i data-lucide="mic" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h3 class="text-base font-extrabold text-white">Голосовой ввод расхода</h3>
+                  <p class="text-xs text-slate-400 mt-1 max-w-[280px] mx-auto">Нажмите на микрофон и расскажите о расходе и участниках</p>
+                </div>
+
+                <!-- Start recording button -->
+                <div class="pt-2">
+                  <button type="button" id="btnVoiceStartRecord" class="h-16 w-16 rounded-full bg-amber-500 text-[#1E1B0E] flex items-center justify-center mx-auto shadow-glowAmber hover:bg-amber-400 transition-all active:scale-95">
+                    <i data-lucide="mic" class="w-7 h-7"></i>
+                  </button>
+                  <p class="text-[11px] font-bold text-amber-400 mt-2.5">Начать запись</p>
+                </div>
+              </div>
+
+              <!-- Prompt hint example -->
+              <div class="rounded-2xl bg-[#151D2E]/60 border border-[#222E46] p-4 space-y-2">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Пример фразы для распознавания:</span>
+                </div>
+                <p class="text-xs text-slate-300 italic bg-[#0E1422] p-3 rounded-xl border border-[#222E46]/60 leading-relaxed">
+                  «Заплатил 2400 ₽ за пиццу, делим на меня, Ивана и Машу. И кофе на 250 ₽ только себе.»
+                </p>
+                <p class="text-[11px] text-slate-500">Нейросеть Whisper расшифрует аудио, а ИИ автоматически распределит траты между участниками.</p>
+              </div>
+            </div>
+
+            <!-- STATE 2: RECORDING (Live audio recording & waveform) -->
+            <div id="voiceStateRecording" class="space-y-4 hidden">
+              <div class="rounded-[24px] bg-[#151D2E] border border-amber-500/40 p-6 text-center space-y-4 shadow-lg shadow-amber-500/5">
+                <div class="flex items-center justify-center gap-2">
+                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+                  <span class="text-xs font-black uppercase tracking-wider text-red-400">Идет запись аудио</span>
+                </div>
+
+                <div id="voiceRecordingTimer" class="text-3xl font-black text-white font-mono tracking-tight">00:00</div>
+                <p class="text-xs text-slate-400">Говорите четко в микрофон устройства...</p>
+
+                <!-- Waveform visualizer -->
+                <div class="waveform-container py-2 flex items-center justify-center gap-1.5 h-12">
+                  <span class="waveform-bar"></span>
+                  <span class="waveform-bar"></span>
+                  <span class="waveform-bar"></span>
+                  <span class="waveform-bar"></span>
+                  <span class="waveform-bar"></span>
+                  <span class="waveform-bar"></span>
+                  <span class="waveform-bar"></span>
+                  <span class="waveform-bar"></span>
+                </div>
+
+                <!-- Stop button -->
+                <div class="pt-2">
+                  <button type="button" id="btnVoiceStopRecord" class="h-16 w-16 rounded-full bg-red-500/20 border-2 border-red-500 text-red-400 flex items-center justify-center mx-auto shadow-lg hover:bg-red-500/30 transition-all active:scale-95 animate-pulse">
+                    <i data-lucide="square" class="w-6 h-6 fill-current"></i>
+                  </button>
+                  <p class="text-[11px] font-bold text-red-400 mt-2.5">Остановить запись</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE 3: RECORDED (Preview audio before sending) -->
+            <div id="voiceStateRecorded" class="space-y-4 hidden">
+              <div class="rounded-[24px] bg-[#151D2E] border border-[#222E46] p-5 text-center space-y-4">
+                <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-mint-500/10 border border-mint-500/20 text-mint-400 mx-auto">
+                  <i data-lucide="check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 id="voiceRecordedDurationTitle" class="text-sm font-black text-white">Запись завершена · 0:00</h3>
+                  <p class="text-xs text-slate-400 mt-0.5">Вы можете прослушать запись перед распознаванием</p>
+                </div>
+
+                <!-- Audio Player Preview -->
+                <div class="bg-[#0E1422] p-2.5 rounded-2xl border border-[#222E46]">
+                  <audio id="voiceAudioPlayer" controls class="w-full h-10"></audio>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2 pt-1">
+                  <button type="button" id="btnVoiceRetake" class="flex-1 py-3 px-4 rounded-xl border border-[#222E46] bg-[#1A2338] text-xs font-bold text-slate-300 hover:text-white transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    Перезаписать
+                  </button>
+                  <button type="button" id="btnVoiceProcess" class="flex-1 py-3 px-4 rounded-xl bg-[#FBBF24] text-xs font-black text-[#1E1B0E] hover:bg-amber-400 shadow-glowAmber transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    Распознать через Whisper AI
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE 4: PROCESSING (Uploading, Transcribing, Parsing) -->
+            <div id="voiceStateProcessing" class="space-y-4 hidden">
+              <div class="rounded-[24px] bg-[#151D2E] border border-[#222E46] p-8 text-center space-y-4">
+                <div class="relative w-16 h-16 mx-auto flex items-center justify-center">
+                  <div class="absolute inset-0 rounded-full border-4 border-amber-500/20 border-t-amber-400 animate-spin"></div>
+                  <i data-lucide="sparkles" class="w-6 h-6 text-amber-400 animate-pulse"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-extrabold text-white">Анализируем запись</h3>
+                  <p id="voiceProcessingStep" class="text-xs text-amber-400 mt-1 font-medium">Whisper расшифровывает речь...</p>
+                </div>
+                <p class="text-[11px] text-slate-500 max-w-[260px] mx-auto">
+                  Нейросеть распознает русскую речь и сопоставит позиции с участниками комнаты.
+                </p>
+              </div>
+            </div>
+
+            <!-- STATE 5: ERROR -->
+            <div id="voiceStateError" class="space-y-4 hidden">
+              <div class="rounded-[24px] bg-[#151D2E] border border-red-500/30 p-6 text-center space-y-3">
+                <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 mx-auto">
+                  <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-sm font-black text-white">Не удалось обработать голос</h3>
+                <p id="voiceErrorMessage" class="text-xs text-slate-300 leading-relaxed max-w-[280px] mx-auto">
+                  Запись не удалась или речь не распознана.
+                </p>
+                <div class="flex flex-col gap-2 pt-2">
+                  <button type="button" id="btnVoiceRetryError" class="w-full py-3 rounded-xl bg-amber-500 text-xs font-black text-[#1E1B0E] hover:bg-amber-400 transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    Записать еще раз
+                  </button>
+                  <button type="button" id="btnVoiceManualFallback" class="w-full py-2.5 rounded-xl border border-[#222E46] bg-[#1A2338] text-xs font-bold text-slate-300 hover:text-white transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    Ввести текстом
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE 6: RESULT / PREVIEW (Editable parsed result) -->
+            <div id="voiceStateResult" class="space-y-4 hidden">
+              <!-- Transcribed Quote Card -->
+              <div class="rounded-2xl bg-[#151D2E] border border-[#222E46] p-4 text-left space-y-1.5">
+                <div class="flex items-center justify-between text-amber-400 text-xs font-bold">
+                  <div class="flex items-center gap-1.5">
+                    <i data-lucide="mic" class="w-3.5 h-3.5"></i>
+                    <span>Расшифровка Whisper AI:</span>
+                  </div>
+                  <span id="voiceResultDurationBadge" class="text-[10px] text-slate-400 font-normal">0:00</span>
+                </div>
+                <p id="voiceTranscribedQuote" class="text-xs text-slate-200 leading-relaxed italic"></p>
+              </div>
+
+              <!-- Warning card if any -->
+              <div id="voiceWarningCard" class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-2.5 hidden">
+                <i data-lucide="alert-circle" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                <p id="voiceWarningText" class="text-xs text-amber-200 leading-relaxed"></p>
+              </div>
+
+              <!-- Header: Title & Total -->
+              <div class="rounded-2xl bg-[#151D2E] border border-[#222E46] p-4 space-y-3">
+                <div class="space-y-1">
+                  <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Название расхода</label>
+                  <input type="text" id="voiceResultTitle" class="w-full rounded-xl bg-[#0E1422] border border-[#222E46] px-3.5 py-2.5 text-sm font-extrabold text-white focus:border-amber-400 focus:outline-none" placeholder="Название расхода">
+                </div>
+                <div class="flex items-center justify-between pt-1">
+                  <span class="text-xs text-slate-400">Итоговая сумма:</span>
+                  <div class="flex items-center gap-1.5">
+                    <input type="number" id="voiceResultTotal" class="w-28 text-right rounded-xl bg-[#0E1422] border border-[#222E46] px-3 py-1.5 text-sm font-black text-amber-400 focus:border-amber-400 focus:outline-none" step="1">
+                    <span class="text-sm font-black text-amber-400">₽</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Extracted Items -->
+              <div>
+                <div class="flex items-center justify-between mb-2 px-1">
+                  <p class="text-xs font-bold text-slate-400">Позиции расхода:</p>
+                  <span id="voiceItemsCountBadge" class="text-[11px] text-slate-400">0 позиций</span>
+                </div>
+                <div id="voiceExtractedItemsContainer" class="space-y-2.5">
+                  <!-- Dynamically populated item cards -->
+                </div>
+
+                <button type="button" id="btnVoiceAddItem" class="mt-2.5 w-full py-2.5 rounded-xl border border-dashed border-[#222E46] text-xs font-bold text-slate-400 hover:text-white hover:border-slate-500 transition-all flex items-center justify-center gap-1.5">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  Добавить позицию
+                </button>
+              </div>
+
+              <!-- User's Calculated Share -->
+              <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="user-check" class="w-4 h-4 text-amber-400"></i>
+                  <span class="text-xs font-bold text-slate-200">Ваша расчетная часть:</span>
+                </div>
+                <span id="voiceUserShareAmount" class="text-sm font-black text-amber-400">0 ₽</span>
+              </div>
+
+              <!-- Retake link -->
+              <div class="text-center pt-1 pb-2">
+                <button type="button" id="btnVoiceStartOver" class="text-xs text-slate-400 hover:text-white underline underline-offset-4">
+                  Записать другое аудио
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Sticky Action Bar (visible only in result state) -->
+          <div id="voiceBottomBar" class="flex-shrink-0 p-4 border-t border-[#222E46] bg-[#0E1422]/95 backdrop-blur pb-[max(16px,env(safe-area-inset-bottom))] hidden">
+            <button type="button" id="btnSubmitVoiceExpense" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FBBF24] py-3.5 text-sm font-black text-[#1E1B0E] shadow-glowAmber transition-all hover:bg-amber-400 active:scale-95">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span id="btnSubmitVoiceText">Внести расход в комнату</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 4: RECEIPT SCANNER (LIVE CAMERA & OCR AI) -->
+        <section id="screen-scan-receipt" class="input-mode-screen flex flex-col h-full w-full hidden">
+          <!-- Header Bar -->
+          <div class="flex-shrink-0 bg-[#0E1422] border-b border-[#222E46] px-4 py-3.5 flex items-center justify-between pt-[max(14px,env(safe-area-inset-top))]">
+            <div class="flex items-center gap-2.5">
+              <button type="button" class="btn-back-input flex h-9 w-9 items-center justify-center rounded-xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-all active:scale-95" aria-label="Назад">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              </button>
+              <div>
+                <h2 class="text-sm sm:text-base font-extrabold text-white">Сканирование чека</h2>
+                <p id="receiptHeaderSub" class="text-[11px] text-slate-400">Live Camera · OCR AI</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" id="btnReceiptTorchToggle" class="hidden h-8 w-8 rounded-lg bg-[#151D2E] border border-[#222E46] text-amber-400 flex items-center justify-center hover:bg-[#1E293B] transition-all" title="Фонарик">
+                <i data-lucide="zap" class="w-4 h-4"></i>
+              </button>
+              <button type="button" id="btnReceiptSwitchCamera" class="h-8 w-8 rounded-lg bg-[#151D2E] border border-[#222E46] text-slate-300 flex items-center justify-center hover:text-white transition-all" title="Переключить камеру">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+              <span class="px-2 py-0.5 rounded-lg text-xs font-black bg-mint-500/20 text-mint-400 border border-mint-500/30">OCR AI</span>
+            </div>
+          </div>
+
+          <!-- Hidden utility elements -->
+          <input type="file" id="receiptFileInput" accept="image/*,.heic,.heif" class="hidden">
+          <canvas id="receiptCaptureCanvas" class="hidden"></canvas>
+
+          <!-- Scrollable Body with State Containers -->
+          <div class="flex-1 overflow-y-auto overflow-x-hidden min-w-0 p-4 space-y-4 no-scrollbar">
+            
+            <!-- STATE A: LIVE CAMERA STREAM -->
+            <div id="scanStateCamera" class="space-y-4">
+              <!-- Viewfinder Card -->
+              <div class="relative w-full rounded-2xl overflow-hidden bg-black border border-[#222E46] aspect-[3/4] sm:aspect-[4/5] max-h-[52vh] flex items-center justify-center shadow-lg">
+                <video id="receiptCameraVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                
+                <!-- Viewfinder Target Frame Overlay -->
+                <div class="absolute inset-0 pointer-events-none flex flex-col items-center justify-between p-6">
+                  <div class="w-full flex justify-between items-center text-[11px] font-mono text-mint-400 bg-black/40 backdrop-blur px-3 py-1 rounded-full border border-mint-500/20">
+                    <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-mint-500 animate-pulse"></span> LIVE КАМЕРА</span>
+                    <span id="cameraResolutionLabel" class="text-slate-400">1080p</span>
+                  </div>
+
+                  <!-- Scanner Cutout Frame -->
+                  <div class="relative w-[85%] aspect-[3/4] border-2 border-dashed border-mint-400/80 rounded-2xl shadow-[0_0_25px_rgba(0,229,153,0.25)] flex items-center justify-center">
+                    <!-- Scanner Corner Accents -->
+                    <span class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-mint-400"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-mint-400"></span>
+                    <span class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-mint-400"></span>
+                    <span class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-mint-400"></span>
+                    
+                    <div class="text-center px-4 py-2 rounded-xl bg-black/60 backdrop-blur border border-white/10">
+                      <p class="text-xs font-bold text-white">Поместите чек в рамку</p>
+                      <p class="text-[10px] text-slate-300 mt-0.5">Держите телефон ровно</p>
+                    </div>
+                  </div>
+
+                  <p class="text-[11px] text-slate-300 bg-black/50 backdrop-blur px-3 py-1 rounded-lg">
+                    Расположите чек полностью внутри рамки
+                  </p>
+                </div>
+              </div>
+
+              <!-- Camera Controls Bar -->
+              <div class="flex items-center justify-between px-2 pt-1">
+                <button type="button" id="btnReceiptOpenGallery" class="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-[#151D2E] border border-[#222E46] text-xs font-bold text-slate-300 hover:text-white transition-all active:scale-95">
+                  <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
+                  <span>Из галереи</span>
+                </button>
+
+                <!-- Shutter Button -->
+                <button type="button" id="btnCaptureReceiptPhoto" class="h-16 w-16 rounded-full bg-[#00D29D] text-[#06281E] flex items-center justify-center shadow-[0_0_0_4px_rgba(0,229,153,0.16),0_10px_26px_rgba(0,229,153,0.28)] hover:scale-105 active:scale-95 transition-all focus:outline-none border-4 border-[#0E1422]" aria-label="Сделать фото чека">
+                  <i data-lucide="camera" class="w-7 h-7"></i>
+                </button>
+
+                <div class="w-[100px] text-right">
+                  <span class="text-[11px] font-bold text-slate-400">Авто-фокус</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE B: CAPTURED PREVIEW -->
+            <div id="scanStateCaptured" class="space-y-4 hidden">
+              <div class="text-center">
+                <h3 class="text-sm font-extrabold text-white">Проверьте фото чека</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Убедитесь, что позиции и итоговая сумма читаемы</p>
+              </div>
+
+              <!-- Preview Image Box -->
+              <div class="relative w-full rounded-2xl overflow-hidden bg-black/50 border border-[#222E46] aspect-[3/4] sm:aspect-[4/5] max-h-[50vh] flex items-center justify-center shadow-lg">
+                <img id="receiptCapturedPreview" src="" alt="Снимок чека" class="w-full h-full object-contain">
+              </div>
+
+              <!-- Retake or Process Buttons -->
+              <div class="sticky bottom-0 z-10 grid grid-cols-2 gap-3 bg-[#0E1422]/95 px-1 pb-3 pt-3 backdrop-blur-md">
+                <button type="button" id="btnRetakePhoto" class="min-h-14 flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl bg-[#172537] border border-[#3D5874] text-sm font-black text-white shadow-lg hover:bg-[#20344B] active:scale-95 transition-all">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                  Переснять
+                </button>
+                <button type="button" id="btnProcessPhoto" class="min-h-14 flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl border border-[#6CF3CE] bg-[#00D29D] text-sm font-black text-[#06281E] shadow-[0_8px_24px_rgba(0,229,153,0.32)] hover:bg-[#20E7B1] active:scale-95 transition-all">
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  Продолжить
+                </button>
+              </div>
+            </div>
+
+            <!-- STATE C: PROCESSING / OCR LOADING -->
+            <div id="scanStateProcessing" class="rounded-[24px] bg-[#151D2E] border border-[#222E46] p-8 text-center space-y-4 hidden">
+              <div class="h-16 w-16 mx-auto rounded-2xl bg-mint-500/10 text-mint-400 border border-mint-500/20 flex items-center justify-center animate-pulse">
+                <i data-lucide="scan-line" class="w-8 h-8 animate-spin text-mint-400"></i>
+              </div>
+              <div>
+                <h3 class="text-base font-extrabold text-white">Распознаём чек нейросетью…</h3>
+                <p id="scanProcessingStep" class="text-xs text-slate-400 mt-1">Оптическое считывание позиций и цен (OCR AI)</p>
+              </div>
+              <div class="space-y-2 pt-2 text-left max-w-[280px] mx-auto text-xs">
+                <div class="flex items-center gap-2 text-mint-400">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  <span>Изображение чека загружено</span>
+                </div>
+                <div class="flex items-center gap-2 text-amber-400 animate-pulse">
+                  <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
+                  <span>Анализ позиций и кассового QR</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-500">
+                  <i data-lucide="circle" class="w-3.5 h-3.5"></i>
+                  <span>Формирование сплита расходов</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE D: ERROR -->
+            <div id="scanStateError" class="rounded-[24px] bg-[#1E1418] border border-rose-500/30 p-6 text-center space-y-4 hidden">
+              <div class="h-14 w-14 mx-auto rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center">
+                <i data-lucide="alert-triangle" class="w-7 h-7"></i>
+              </div>
+              <div>
+                <h3 id="scanErrorTitle" class="text-sm font-black text-white">Не удалось распознать чек</h3>
+                <p id="scanErrorMessage" class="text-xs text-slate-300 mt-1 leading-relaxed">
+                  Попробуйте сделать фото ближе и при хорошем освещении или выберите фото из галереи.
+                </p>
+              </div>
+              <div class="flex flex-col gap-2 pt-2">
+                <button type="button" id="btnScanErrorRetry" class="w-full py-3 rounded-xl bg-mint-500 text-xs font-black text-[#06281E] shadow-sm hover:bg-mint-400 transition-all">
+                  Попробовать снова
+                </button>
+                <button type="button" id="btnScanErrorGallery" class="w-full py-3 rounded-xl bg-[#151D2E] border border-[#222E46] text-xs font-bold text-slate-200 hover:text-white transition-all">
+                  Выбрать фото из галереи
+                </button>
+                <button type="button" id="btnScanErrorManual" class="w-full py-2.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-all">
+                  Внести расход вручную
+                </button>
+              </div>
+            </div>
+
+            <!-- STATE E: PARSED RESULT & EDITING -->
+            <div id="scanStateResult" class="space-y-4 hidden">
+              <!-- Summary Card (Merchant + Total) -->
+              <div class="rounded-2xl bg-[#151D2E] border border-[#222E46] p-4 space-y-3">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400 font-bold">Магазин / Заведение:</span>
+                  <span id="scanResultBadge" class="px-2 py-0.5 rounded-lg text-[10px] font-black bg-mint-500/10 text-mint-400 border border-mint-500/20">OCR AI</span>
+                </div>
+                <input id="scanResultMerchant" type="text" class="w-full bg-[#0E1422] border border-[#222E46] rounded-xl px-3 py-2 text-sm font-extrabold text-white outline-none focus:border-mint-500/60 transition-all" placeholder="Название магазина">
+
+                <div class="flex items-center justify-between pt-2 border-t border-[#222E46]">
+                  <span class="text-xs text-slate-400 font-bold">Итоговая сумма чека:</span>
+                  <div class="flex items-center gap-1.5">
+                    <input id="scanResultTotal" type="number" step="0.01" class="w-28 bg-[#0E1422] border border-[#222E46] rounded-xl px-3 py-1.5 text-right text-base font-black text-white outline-none focus:border-mint-500/60 transition-all" placeholder="0">
+                    <span class="text-sm font-black text-white">₽</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sum Discrepancy Warning Banner -->
+              <div id="scanResultWarningBanner" class="hidden rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 flex items-start gap-2.5 text-xs text-amber-300">
+                <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5 text-amber-400"></i>
+                <div class="flex-1">
+                  <p id="scanResultWarningText" class="font-bold">Сумма позиций отличается от итога чека.</p>
+                  <p class="text-[11px] text-amber-200/80 mt-0.5">Вы можете скорректировать суммы вручную или синхронизировать их.</p>
+                </div>
+              </div>
+
+              <!-- Items Section Header -->
+              <div class="flex items-center justify-between text-xs px-1">
+                <span class="font-extrabold text-white">Позиции из чека (<span id="scanResultItemsCount">0</span>)</span>
+                <button type="button" id="btnAddManualItemRow" class="text-cyan-400 font-bold hover:text-cyan-300 flex items-center gap-1">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> Добавить строку
+                </button>
+              </div>
+
+              <!-- List of Parsed Items -->
+              <div id="scanParsedItemsContainer" class="space-y-3">
+                <!-- Dynamically populated rows with participant chips -->
+              </div>
+
+              <!-- User Total Share Summary Box -->
+              <div class="rounded-2xl bg-[#0B2A22] border border-[#134E3F] p-4 flex items-center justify-between">
+                <div>
+                  <p class="text-xs font-extrabold text-mint-400">Ваша расчетная часть</p>
+                  <p id="scanUserShareHint" class="text-[11px] text-slate-400 mt-0.5">На основе выбранных позиций</p>
+                </div>
+                <p id="scanUserShareAmount" class="text-lg font-black text-[#00E599]">0 ₽</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Sticky Action Bar (For Result State) -->
+          <div id="scanResultBottomBar" class="hidden flex-shrink-0 p-4 border-t border-[#222E46] bg-[#0E1422]/95 backdrop-blur pb-[max(16px,env(safe-area-inset-bottom))]">
+            <button type="button" id="btnSaveParsedReceipt" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3.5 text-sm font-black text-[#06281E] shadow-glowMint hover:bg-mint-400 active:scale-95 transition-all">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Подтвердить и добавить в комнату</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 5: DOCUMENT IMPORT (PDF/CSV) -->
+        <section id="screen-upload-doc" class="input-mode-screen flex flex-col h-full w-full hidden">
+          <!-- Header -->
+          <div class="flex-shrink-0 flex items-center justify-between px-4 py-3.5 border-b border-[#222E46] bg-[#0E1422] pt-[max(14px,env(safe-area-inset-top))]">
+            <button type="button" class="btn-back-input flex h-9 w-9 items-center justify-center rounded-xl bg-[#151D2E] border border-[#222E46] text-slate-300 hover:text-white transition-all active:scale-95" aria-label="Назад">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <div class="text-center flex-1 px-2 min-w-0">
+              <h2 class="text-sm sm:text-base font-extrabold text-white truncate">Импорт чека</h2>
+              <p class="text-[11px] text-slate-400 truncate">PDF, CSV, электронные билеты</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-lg text-xs font-black bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">PDF/CSV</span>
+          </div>
+
+          <!-- Scrollable Body -->
+          <div class="flex-1 overflow-y-auto overflow-x-hidden min-w-0 p-4 space-y-4 no-scrollbar">
+            <input type="file" id="docFileInput" accept=".pdf,.csv,text/csv,application/pdf" class="hidden">
+
+            <!-- File card -->
+            <div id="docFileCardFigma" class="rounded-2xl border border-[#222E46] bg-[#151D2E] p-4 flex items-center justify-between cursor-pointer hover:border-indigo-500/50 transition-all">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/20 text-[#818CF8] border border-indigo-500/30">
+                  <i data-lucide="file-text" class="w-6 h-6"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 id="docFileName" class="text-sm font-extrabold text-white truncate">Выберите PDF или CSV</h4>
+                  <p id="docFileSize" class="text-xs text-slate-400 mt-0.5">Поддерживаются PDF и CSV до 20 МБ</p>
+                  <p id="docParseStatus" class="hidden text-xs font-bold mt-1 flex items-center gap-1" aria-live="polite">
+                    <span class="h-1.5 w-1.5 rounded-full bg-mint-500"></span>
+                    <span></span>
+                  </p>
+                </div>
+              </div>
+              <button type="button" id="btnDocTriggerSelect" class="text-slate-400 hover:text-white p-2">
+                <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+              </button>
+            </div>
+
+            <!-- Данные из документа -->
+            <div>
+              <p class="text-xs font-bold text-slate-400 mb-2 px-1">Данные из документа:</p>
+              <div class="rounded-2xl bg-[#151D2E] border border-[#222E46] p-4 space-y-3">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400">Услуга:</span>
+                  <span id="docServiceName" class="font-extrabold text-white">Документ ещё не загружен</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400">Даты:</span>
+                  <span id="docServiceDates" class="font-extrabold text-white">—</span>
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-[#222E46]">
+                  <span id="docTotalAmountDisplay" class="text-xl font-black text-white">— ₽</span>
+                  <span class="text-xs font-medium text-slate-400">Общий счет:</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-400">Разделение:</span>
+                  <span id="docSplitLabel" class="font-extrabold text-mint-400">Выберите участников</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Participants selected for this imported expense only. -->
+            <div class="rounded-2xl bg-[#151D2E] border border-[#222E46] p-4">
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <div>
+                  <p class="text-sm font-extrabold text-white">С кем разделить расход</p>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Выберите только участников этого платежа</p>
+                </div>
+                <span id="docParticipantsCount" class="rounded-full bg-mint-500/10 border border-mint-500/25 px-2.5 py-1 text-[11px] font-black text-mint-400">0</span>
+              </div>
+              <div id="docParticipantsContainer" class="flex flex-wrap gap-2">
+                <p class="text-xs text-slate-500">Выберите документ, чтобы указать участников</p>
+              </div>
+            </div>
+
+            <!-- Доля на каждого участника -->
+            <div class="rounded-2xl bg-[#0B2A22] border border-[#134E3F] p-4 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-extrabold text-mint-400">Доля каждого выбранного</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Пересчитывается при выборе участников</p>
+              </div>
+              <p id="docMyShareDisplay" class="text-lg font-black text-[#00E599]">— ₽</p>
+            </div>
+          </div>
+
+          <!-- Bottom Sticky Action Bar -->
+          <div class="flex-shrink-0 p-4 border-t border-[#222E46] bg-[#0E1422]/95 backdrop-blur pb-[max(16px,env(safe-area-inset-bottom))]">
+            <button type="button" id="btnParseDocSubmit" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#5B50E6] py-3.5 text-sm font-black text-white shadow-lg transition-all hover:bg-[#6D62F7] active:scale-95">
+              Выбрать PDF или CSV
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Bottom Navigation Bar -->
+      <nav id="bottomNav" class="bottom-nav-shell absolute inset-x-0 bottom-0 z-30" hidden>
+        <div class="bottom-nav-inner">
+          <div class="bottom-nav-group bottom-nav-group--left">
+          <!-- 1: Overview -->
+          <button type="button" data-tab="overview" class="nav-btn active flex min-w-0 flex-col items-center gap-1 px-1 py-1 text-mint-400 transition-colors focus:outline-none">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span class="whitespace-nowrap text-[10px] font-bold">Комната</span>
+          </button>
+          
+          <!-- 2: History -->
+          <button type="button" data-tab="history" class="nav-btn flex min-w-0 flex-col items-center gap-1 px-1 py-1 text-slate-400 transition-colors focus:outline-none">
+            <i data-lucide="history" class="w-5 h-5"></i>
+            <span class="whitespace-nowrap text-[10px] font-semibold">История</span>
+          </button>
+          </div>
+
+          <!-- 3: Elevated Center Add Expense Button -->
+          <button type="button" id="btnElevatedBot" class="group flex flex-col items-center focus:outline-none">
+            <span class="bottom-nav-add flex items-center justify-center rounded-full text-[#06281E] transition-transform duration-150 active:scale-95">
+              <i data-lucide="plus"></i>
+            </span>
+            <span class="text-[10px] font-black text-mint-400">+ Расход</span>
+          </button>
+
+          <div class="bottom-nav-group bottom-nav-group--right">
+          <!-- 5: Analytics -->
+          <button type="button" data-tab="analytics" class="nav-btn flex min-w-0 flex-col items-center gap-1 px-1 py-1 text-slate-400 transition-colors focus:outline-none">
+            <i data-lucide="chart-no-axes-combined" class="w-5 h-5"></i>
+            <span class="whitespace-nowrap text-[10px] font-semibold">Аналитика</span>
+          </button>
+
+          <!-- 5: Cashback Preview -->
+          <button type="button" data-tab="cashback" class="nav-btn flex min-w-0 flex-col items-center gap-1 px-1 py-1 text-slate-400 transition-colors focus:outline-none">
+            <i data-lucide="badge-percent" class="w-5 h-5"></i>
+            <span class="whitespace-nowrap text-[10px] font-semibold">Кешбек</span>
+          </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- BOTTOM SHEETS CONTAINER OVERLAY -->
+      <div id="sheetOverlay" class="absolute inset-0 z-50 flex items-end bg-black/75 transition-opacity duration-200 hidden opacity-0">
+
+        <section id="sheet-delete-room" class="sheet-content w-full rounded-t-[32px] bg-[#0E1422] p-5 pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-700"></div>
+          <div class="flex h-11 w-11 items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-300"><i data-lucide="triangle-alert" class="w-5 h-5"></i></div>
+          <h2 class="mt-4 text-lg font-black text-white">Удалить комнату?</h2>
+          <p id="deleteRoomConfirmationText" class="mt-2 text-sm leading-relaxed text-slate-400">Все данные комнаты будут удалены без возможности восстановления.</p>
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <button type="button" class="close-sheet rounded-xl border border-[#334155] bg-[#151D2E] px-3 py-3 text-sm font-bold text-slate-200">Отмена</button>
+            <button type="button" id="btnConfirmDeleteRoom" class="rounded-xl bg-rose-500 px-3 py-3 text-sm font-black text-white active:scale-95">Удалить</button>
+          </div>
+        </section>
+
+        <!-- NOTIFICATION CENTER -->
+        <section id="sheet-action-confirm" class="sheet-content w-full rounded-t-[32px] bg-[#0E1422] p-5 pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-slate-700"></div>
+          <h2 id="actionConfirmTitle" class="text-lg font-black text-white">Подтвердите действие</h2>
+          <p id="actionConfirmText" class="mt-2 text-sm leading-relaxed text-slate-400"></p>
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <button type="button" id="btnCancelActionConfirm" class="rounded-xl border border-[#334155] bg-[#151D2E] px-3 py-3 text-sm font-bold text-slate-200">Отмена</button>
+            <button type="button" id="btnAcceptActionConfirm" class="rounded-xl bg-[#00D29D] px-3 py-3 text-sm font-black text-[#06281E] active:scale-95">Подтвердить</button>
+          </div>
+        </section>
+
+        <!-- NOTIFICATION CENTER -->
+        <section id="sheet-notifications" class="sheet-content no-scrollbar max-h-[70%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <div><h2 class="text-lg font-black text-white">Уведомления</h2><p class="text-[11px] text-slate-400">События этой комнаты</p></div>
+            <button type="button" id="btnMarkNotificationsRead" class="mr-auto ml-3 text-[11px] font-bold text-[#00E599]">Прочитать все</button>
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+          </div>
+          <div id="notificationsList" class="px-5 py-4 space-y-2.5">
+            <div class="py-6 text-center text-xs text-slate-400">Загрузка уведомлений...</div>
+          </div>
+        </section>
+        
+        <!-- SHEET 0: ADD EXPENSE PICKER (presentation-only; modes remain handled in app.js) -->
+        <section id="sheet-add-picker" class="sheet-content add-expense-picker no-scrollbar hidden" aria-labelledby="addExpenseTitle">
+          <div class="add-expense-stage">
+            <div class="add-expense-decoration add-expense-decoration--chart" aria-hidden="true"></div>
+            <div class="add-expense-decoration add-expense-decoration--ruble" aria-hidden="true">₽</div>
+            <div class="add-expense-decoration add-expense-decoration--receipt" aria-hidden="true"></div>
+            <div class="add-expense-orbit add-expense-orbit--left" aria-hidden="true"></div>
+            <div class="add-expense-orbit add-expense-orbit--right" aria-hidden="true"></div>
+
+            <header class="add-expense-topbar">
+              <div class="add-expense-brand">
+                <span class="add-expense-brand-mark" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+                <div class="add-expense-room-copy">
+                  <p>СБЕРСПЛИТ · КОМНАТА</p>
+                  <span id="addExpenseRoomName">Комната</span>
+                </div>
+              </div>
+              <div class="add-expense-utilities">
+                <button type="button" class="add-expense-utility" id="btnAddExpenseBell" aria-label="Уведомления"><i data-lucide="bell"></i><b id="addExpenseBellBadge" class="hidden"></b></button>
+                <button type="button" class="add-expense-utility" id="btnAddExpenseSettings" aria-label="Настройки"><i data-lucide="settings-2"></i></button>
+                <button type="button" class="add-expense-utility close-sheet" aria-label="Закрыть"><i data-lucide="x"></i></button>
+              </div>
+            </header>
+
+            <div class="add-expense-hero">
+              <h2 id="addExpenseTitle">Внести <em>расход</em></h2>
+              <p>Выберите удобный способ добавления<br class="add-expense-desktop-break"> расхода в комнату</p>
+            </div>
+
+            <div class="add-expense-methods" role="list">
+              <button type="button" class="picker-opt-btn add-expense-method" data-mode="receipt" role="listitem">
+                <span class="add-expense-method-icon"><i data-lucide="camera"></i></span>
+                <span class="add-expense-method-copy"><strong>Сканировать чек</strong><small>Сфотографируйте чек</small></span>
+                <i data-lucide="chevron-right" class="add-expense-chevron"></i>
+              </button>
+              <button type="button" class="picker-opt-btn add-expense-method" data-mode="voice" role="listitem">
+                <span class="add-expense-method-icon"><i data-lucide="mic"></i></span>
+                <span class="add-expense-method-copy"><strong>Голосовой ввод</strong><small>Наговорите расход</small></span>
+                <i data-lucide="chevron-right" class="add-expense-chevron"></i>
+              </button>
+              <button type="button" class="picker-opt-btn add-expense-method" data-mode="text" role="listitem">
+                <span class="add-expense-method-icon"><i data-lucide="notebook-tabs"></i></span>
+                <span class="add-expense-method-copy"><strong>Текстовый ввод</strong><small>Вставьте или напишите текст</small></span>
+                <i data-lucide="chevron-right" class="add-expense-chevron"></i>
+              </button>
+              <button type="button" class="picker-opt-btn add-expense-method" data-mode="manual" role="listitem">
+                <span class="add-expense-method-icon"><i data-lucide="pencil-line"></i></span>
+                <span class="add-expense-method-copy"><strong>Вручную</strong><small>Заполните форму</small></span>
+                <i data-lucide="chevron-right" class="add-expense-chevron"></i>
+              </button>
+              <button type="button" class="picker-opt-btn add-expense-method" data-mode="doc" role="listitem">
+                <span class="add-expense-method-icon add-expense-method-icon--pdf"><i data-lucide="file-text"></i><b>PDF</b></span>
+                <span class="add-expense-method-copy"><strong>PDF-импорт</strong><small>Загрузите PDF-выписку</small></span>
+                <i data-lucide="chevron-right" class="add-expense-chevron"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- FIGMA SCREEN 1: ИТОГИ КОМНАТЫ (Exact match to media_1788523300056.jpg) -->
+        <section id="sheet-room-settlement" class="sheet-content no-scrollbar max-h-[92%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white transition-colors">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <h2 class="text-base font-extrabold text-white">Итоги комнаты</h2>
+            <div class="h-9 w-9" aria-hidden="true"></div>
+          </div>
+
+          <div class="px-5 py-4 space-y-4">
+            <!-- Hero Card: Ваш личный результат -->
+            <div id="settlementPersonalBox" class="rounded-[24px] p-5 text-center shadow-card bg-[#10242B] border border-[#164E43] relative overflow-hidden">
+              <p class="text-xs font-bold text-mint-400">Ваш личный результат</p>
+              <p id="settlementPersonalAmount" class="mt-1 text-[34px] font-black tracking-tight text-[#00E599]">+6 094 ₽</p>
+              <p id="settlementPersonalNote" class="text-xs text-slate-400 mt-1">Вам должны перевести участники</p>
+            </div>
+
+            <!-- Transfers Section Header -->
+            <div>
+              <div class="flex items-center justify-between mb-2.5 px-1">
+                <span class="text-xs font-bold text-white">Кому и сколько перевести</span>
+                <span id="settlementTransfersCount" class="text-xs text-slate-400">2 перевода</span>
+              </div>
+              <div id="settlementTransfersList" class="space-y-2.5">
+                <!-- Example matching Figma -->
+                <div class="flex items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#222E46] text-slate-200 font-extrabold text-xs">
+                      КТ
+                    </span>
+                    <div>
+                      <h4 class="text-sm font-extrabold text-white">Участник комнаты</h4>
+                      <p class="text-[11px] text-slate-400">переводит вам</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded-lg text-xs font-extrabold bg-[#1A2832] text-cyan-400 border border-cyan-500/20">Ждем</span>
+                    <span class="text-sm font-black text-[#00E599]">+3 711 ₽</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-700/30 text-cyan-300 font-extrabold text-xs border border-cyan-500/30">
+                      МВ
+                    </span>
+                    <div>
+                      <h4 class="text-sm font-extrabold text-white">Другой участник</h4>
+                      <p class="text-[11px] text-slate-400">переводит вам</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded-lg text-xs font-extrabold bg-[#10242B] text-mint-400 border border-mint-500/20">СБП</span>
+                    <span class="text-sm font-black text-[#00E599]">+2 383 ₽</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom CTA Button (Figma exact) -->
+            <div class="pt-2">
+              <button type="button" id="btnSendSettlementToTelegram" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3.5 text-sm font-black text-[#06281E] shadow-glowMint transition-all hover:bg-mint-500 active:scale-95">
+                <i data-lucide="share-2" class="w-4 h-4"></i>
+                Обновить сводку в Telegram
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SHEET: ВЫБОР ПЕРИОДА АНАЛИТИКИ -->
+        <section id="sheet-analytics-period" class="sheet-content no-scrollbar max-h-[85%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <div class="flex items-center gap-2">
+              <i data-lucide="calendar" class="w-5 h-5 text-[#00E599]"></i>
+              <h2 class="text-base font-extrabold text-white">Период аналитики</h2>
+            </div>
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="p-5 space-y-2.5">
+            <!-- 1. Текущий месяц -->
+            <button type="button" class="analytics-period-opt flex w-full items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] hover:bg-[#1C263B] transition-all text-left" data-period-type="current_month">
+              <div>
+                <p class="text-sm font-bold text-white">Текущий месяц</p>
+                <p id="periodOptCurrentMonthSub" class="text-xs text-slate-400 mt-0.5">Сентябрь 2026</p>
+              </div>
+              <div class="period-check-icon w-6 h-6 rounded-full border border-[#222E46] bg-[#101726] flex items-center justify-center text-[#00E599]">
+                <i data-lucide="check" class="w-4 h-4"></i>
+              </div>
+            </button>
+
+            <!-- 2. Прошлый месяц -->
+            <button type="button" class="analytics-period-opt flex w-full items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] hover:bg-[#1C263B] transition-all text-left" data-period-type="prev_month">
+              <div>
+                <p class="text-sm font-bold text-white">Прошлый месяц</p>
+                <p id="periodOptPrevMonthSub" class="text-xs text-slate-400 mt-0.5">Август 2026</p>
+              </div>
+              <div class="period-check-icon w-6 h-6 rounded-full border border-[#222E46] bg-[#101726] flex items-center justify-center text-[#00E599]">
+                <i data-lucide="check" class="w-4 h-4 hidden"></i>
+              </div>
+            </button>
+
+            <!-- 3. Последние 7 дней -->
+            <button type="button" class="analytics-period-opt flex w-full items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] hover:bg-[#1C263B] transition-all text-left" data-period-type="7_days">
+              <div>
+                <p class="text-sm font-bold text-white">Последние 7 дней</p>
+                <p class="text-xs text-slate-400 mt-0.5">Посуточная динамика трат</p>
+              </div>
+              <div class="period-check-icon w-6 h-6 rounded-full border border-[#222E46] bg-[#101726] flex items-center justify-center text-[#00E599]">
+                <i data-lucide="check" class="w-4 h-4 hidden"></i>
+              </div>
+            </button>
+
+            <!-- 4. Последние 30 дней -->
+            <button type="button" class="analytics-period-opt flex w-full items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] hover:bg-[#1C263B] transition-all text-left" data-period-type="30_days">
+              <div>
+                <p class="text-sm font-bold text-white">Последние 30 дней</p>
+                <p class="text-xs text-slate-400 mt-0.5">Динамика за 30 дней по неделям</p>
+              </div>
+              <div class="period-check-icon w-6 h-6 rounded-full border border-[#222E46] bg-[#101726] flex items-center justify-center text-[#00E599]">
+                <i data-lucide="check" class="w-4 h-4 hidden"></i>
+              </div>
+            </button>
+
+            <!-- 5. Всё время -->
+            <button type="button" class="analytics-period-opt flex w-full items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] hover:bg-[#1C263B] transition-all text-left" data-period-type="all_time">
+              <div>
+                <p class="text-sm font-bold text-white">Всё время</p>
+                <p class="text-xs text-slate-400 mt-0.5">Вся история текущей комнаты</p>
+              </div>
+              <div class="period-check-icon w-6 h-6 rounded-full border border-[#222E46] bg-[#101726] flex items-center justify-center text-[#00E599]">
+                <i data-lucide="check" class="w-4 h-4 hidden"></i>
+              </div>
+            </button>
+
+            <!-- 6. Выбрать даты -->
+            <button type="button" id="btnPeriodCustomToggle" class="analytics-period-opt flex w-full items-center justify-between p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] hover:bg-[#1C263B] transition-all text-left" data-period-type="custom">
+              <div>
+                <p class="text-sm font-bold text-white">Выбрать даты</p>
+                <p class="text-xs text-slate-400 mt-0.5">Произвольный диапазон</p>
+              </div>
+              <div class="period-check-icon w-6 h-6 rounded-full border border-[#222E46] bg-[#101726] flex items-center justify-center text-[#00E599]">
+                <i data-lucide="check" class="w-4 h-4 hidden"></i>
+              </div>
+            </button>
+
+            <!-- Custom date range block -->
+            <div id="customDateRangeInputs" class="hidden rounded-2xl bg-[#101726] border border-[#222E46] p-4 space-y-3 mt-1">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-[11px] font-bold text-slate-400 block mb-1">Дата начала</label>
+                  <input type="date" id="analyticsCustomDateFrom" class="w-full bg-[#151D2E] border border-[#222E46] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00D29D]">
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-400 block mb-1">Дата окончания</label>
+                  <input type="date" id="analyticsCustomDateTo" class="w-full bg-[#151D2E] border border-[#222E46] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00D29D]">
+                </div>
+              </div>
+              <button type="button" id="btnApplyCustomDateRange" class="w-full py-2.5 rounded-xl bg-[#00D29D] text-[#06281E] font-black text-xs hover:bg-mint-500 active:scale-95 transition-all">
+                Применить даты
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SHEET 6: CREATE DEBT SHEET -->
+        <section id="sheet-create-debt" class="sheet-content no-scrollbar max-h-[88%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <h2 class="text-lg font-black tracking-[-0.02em] text-white">Новый долг</h2>
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <form id="formCreateDebt" class="px-5 py-4 space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 mb-1.5">Направление долга</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="debtDirOwedToMe" class="debt-dir-btn active py-2.5 px-3 rounded-xl border-2 border-mint-500 bg-[#10242B] text-xs font-black text-mint-400 flex items-center justify-center gap-1.5 transition-all">
+                  <i data-lucide="arrow-down-left" class="w-4 h-4"></i> Мне должны
+                </button>
+                <button type="button" id="debtDirIOwe" class="debt-dir-btn py-2.5 px-3 rounded-xl border border-[#222E46] bg-[#151D2E] text-xs font-bold text-slate-400 flex items-center justify-center gap-1.5 transition-all">
+                  <i data-lucide="arrow-up-right" class="w-4 h-4"></i> Я должен
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label id="debtCounterpartyLabel" class="block text-xs font-bold text-slate-400 mb-1.5">Кто должен вам?</label>
+              <select id="debtMemberSelect" class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] p-3 text-sm font-semibold text-white outline-none">
+                <option value="">Выберите участника комнаты...</option>
+              </select>
+              <div class="mt-2">
+                <button type="button" id="btnAddFromTelegram" class="text-xs font-bold text-[#00E599] hover:text-white">＋ Добавить участника из Telegram</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-400 mb-1.5">Сумма долга (₽)</label>
+              <input type="number" id="debtAmountInput" step="0.01" min="1" placeholder="0" required class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] p-3 text-lg font-black text-white outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-400 mb-1.5">За что долг (описание)</label>
+              <input type="text" id="debtDescriptionInput" placeholder="Например: Обед в ресторане, такси..." required class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] p-3 text-sm font-semibold text-white outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-400 mb-1.5">Частота напоминаний</label>
+              <select id="debtFrequencySelect" class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] p-3 text-sm font-semibold text-white outline-none">
+                <option value="none">Без напоминаний</option>
+                <option value="10_min">Каждые 10 минут</option>
+                <option value="30_min">Каждые 30 минут</option>
+                <option value="3_times_a_day">3 раза в день</option>
+                <option value="daily" selected>Ежедневно</option>
+                <option value="every_3_days">Раз в 3 дня</option>
+                <option value="weekly">Еженедельно</option>
+              </select>
+            </div>
+
+            <button type="submit" id="btnSubmitCreateDebt" class="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3.5 text-sm font-black text-[#06281E] shadow-glowMint transition-all hover:bg-mint-500 active:scale-95">
+              <i data-lucide="check" class="w-4 h-4"></i> Зафиксировать долг
+            </button>
+          </form>
+        </section>
+
+        <!-- DEBT DETAIL: available from every manual debt card -->
+        <section id="sheet-debt-detail" class="sheet-content no-scrollbar max-h-[88%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <h2 class="text-lg font-black tracking-[-0.02em] text-white">Детали долга</h2>
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white transition-colors"><i data-lucide="x" class="h-4 w-4"></i></button>
+          </div>
+          <div class="space-y-4 px-5 py-4">
+            <div class="rounded-2xl border border-[#00D29D]/25 bg-[#10242B] p-4">
+              <p id="debtDetailDescription" class="text-base font-black text-white">Долг</p>
+              <p id="debtDetailParties" class="mt-1 text-xs font-semibold text-slate-400">Участник → Участник</p>
+              <p id="debtDetailRemaining" class="mt-4 text-3xl font-black text-[#00E599]">0 ₽</p>
+              <p class="mt-1 text-xs text-slate-400">Остаток к оплате из <span id="debtDetailOriginal" class="font-bold text-slate-200">0 ₽</span></p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="rounded-xl border border-[#222E46] bg-[#151D2E] p-3"><p class="text-slate-400">Срок</p><p id="debtDetailDueDate" class="mt-1 font-bold text-white">Бессрочно</p></div>
+              <div class="rounded-xl border border-[#222E46] bg-[#151D2E] p-3"><p class="text-slate-400">Напоминания</p><p id="debtDetailFrequency" class="mt-1 font-bold text-white">Без напоминаний</p></div>
+            </div>
+            <div id="debtReminderSettings" class="rounded-2xl border border-[#00D29D]/25 bg-[#10242B] p-3.5 hidden">
+              <div class="mb-2 flex items-center justify-between gap-3"><div><p class="text-xs font-black text-white">Напоминания о долге</p><p class="mt-0.5 text-[10px] text-slate-400">Отправляются только до погашения</p></div><i data-lucide="bell-ring" class="h-4 w-4 text-[#00E599]"></i></div>
+              <div class="flex gap-2"><select id="debtReminderFrequencySelect" class="min-w-0 flex-1 rounded-xl border border-[#222E46] bg-[#151D2E] px-3 py-2.5 text-xs font-bold text-white outline-none"><option value="none">Выключены</option><option value="10_min">Каждые 10 минут</option><option value="30_min">Каждые 30 минут</option><option value="3_times_a_day">3 раза в день</option><option value="daily">Ежедневно</option><option value="every_3_days">Раз в 3 дня</option><option value="weekly">Еженедельно</option></select><button type="button" id="btnSaveDebtReminders" class="rounded-xl bg-[#00D29D] px-3 text-xs font-black text-[#06281E]">Сохранить</button></div>
+            </div>
+            <p id="debtPaymentReadOnlyNote" class="hidden rounded-xl border border-sky-400/25 bg-sky-400/10 px-3 py-2.5 text-center text-xs font-semibold text-sky-100">Этот долг должны вам. Оплату вносит должник.</p>
+            <button type="button" id="btnOpenDebtPaymentSheet" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3.5 text-sm font-black text-[#06281E] shadow-glowMint active:scale-95"><i data-lucide="credit-card" class="h-4 w-4"></i> Внести оплату</button>
+            <button type="button" id="btnMarkDebtPaid" class="w-full rounded-2xl border border-[#00D29D]/35 bg-[#00D29D]/10 py-3 text-sm font-black text-[#00E599] active:scale-95">Оплатить полностью</button>
+            <div class="border-t border-[#222E46] pt-4"><p class="mb-2 text-xs font-black uppercase tracking-wide text-slate-400">История оплат</p><div id="debtDetailPaymentsList" class="divide-y divide-[#222E46]"></div></div>
+          </div>
+        </section>
+
+        <!-- DEBT PAYMENT: supports partial or full payment -->
+        <section id="sheet-debt-payment" class="sheet-content no-scrollbar max-h-[88%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <h2 class="text-lg font-black tracking-[-0.02em] text-white">Оплата долга</h2>
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white transition-colors"><i data-lucide="x" class="h-4 w-4"></i></button>
+          </div>
+          <form id="formDebtPayment" class="space-y-4 px-5 py-4">
+            <div class="rounded-2xl border border-[#00D29D]/25 bg-[#10242B] p-4 text-center"><p class="text-xs text-slate-400">Осталось оплатить</p><p id="debtPaymentRemainingAmount" class="mt-1 text-3xl font-black text-[#00E599]">0 ₽</p></div>
+            <div><label class="mb-1.5 block text-xs font-bold text-slate-400">Сумма платежа, ₽</label><input id="debtPaymentAmountInput" type="number" step="0.01" min="0.01" required class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] p-3 text-lg font-black text-white outline-none" placeholder="0"></div>
+            <div class="grid grid-cols-3 gap-2"><button type="button" id="chipPay25" class="rounded-xl border border-[#222E46] bg-[#151D2E] py-2 text-xs font-bold text-slate-200">25%</button><button type="button" id="chipPay50" class="rounded-xl border border-[#222E46] bg-[#151D2E] py-2 text-xs font-bold text-slate-200">50%</button><button type="button" id="chipPay100" class="rounded-xl border border-[#00D29D]/35 bg-[#00D29D]/10 py-2 text-xs font-black text-[#00E599]">Всю сумму</button></div>
+            <div><label class="mb-1.5 block text-xs font-bold text-slate-400">Комментарий</label><input id="debtPaymentNoteInput" type="text" class="w-full rounded-xl border border-[#222E46] bg-[#151D2E] p-3 text-sm font-semibold text-white outline-none" placeholder="Например: перевод на карту"></div>
+            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3.5 text-sm font-black text-[#06281E] shadow-glowMint active:scale-95"><i data-lucide="check" class="h-4 w-4"></i> Подтвердить оплату</button>
+          </form>
+        </section>
+
+        <!-- SHEET 5: ROOMS SWITCHER SHEET («МОИ КОМНАТЫ») -->
+        <section id="sheet-groups" class="sheet-content no-scrollbar max-h-[85%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <div>
+              <h2 class="text-lg font-black tracking-[-0.02em] text-white">Мои комнаты</h2>
+              <p class="text-xs text-slate-400">Выберите комнату или создайте новую</p>
+            </div>
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+          
+          <div class="px-5 py-4 space-y-3">
+            <button type="button" id="btnOpenCreateRoomSheet" class="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3 text-sm font-black text-[#06281E] shadow-glowMint hover:bg-mint-500 active:scale-95 transition-all">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Создать новую комнату
+            </button>
+
+            <div id="groupsListContainer" class="space-y-2">
+              <div class="py-4 text-center text-xs text-slate-400">Загрузка комнат...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FIGMA SCREEN: СОЗДАНИЕ НОВОЙ КОМНАТЫ (media_1788523338113.jpg) -->
+        <section id="sheet-create-room" class="sheet-content no-scrollbar max-h-[94%] w-full overflow-y-auto rounded-t-[32px] bg-[#0E1422] pb-[max(24px,env(safe-area-inset-bottom))] shadow-sheet transform translate-y-full transition-transform duration-250 ease-out hidden">
+          
+          <!-- Sticky Header -->
+          <div class="sticky top-0 z-20 flex items-center justify-between border-b border-[#222E46] bg-[#0E1422] px-5 py-4">
+            <button type="button" class="close-sheet flex h-9 w-9 items-center justify-center rounded-full bg-[#151D2E] text-slate-400 hover:text-white transition-colors">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <h2 class="text-base font-extrabold text-white">Новая комната</h2>
+            <div class="w-9"></div>
+          </div>
+
+          <form id="formCreateRoomFigma" class="px-5 py-4 space-y-4">
+            <!-- 1. Формат сбора расходов -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-2">Формат сбора расходов</label>
+              <div class="grid grid-cols-2 gap-3">
+                <!-- Option 1: Разовый чек -->
+                <button type="button" id="btnFormatOneTime" class="room-format-btn p-3.5 rounded-2xl bg-[#151D2E] border border-[#222E46] text-left transition-all active:scale-[0.98]" data-format="one_time">
+                  <div class="flex items-center gap-2 mb-2 text-slate-400">
+                    <i data-lucide="receipt" class="w-5 h-5"></i>
+                  </div>
+                  <h4 class="text-sm font-extrabold text-white">Разовый чек</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Ужин в ресторане</p>
+                </button>
+
+                <!-- Option 2: Длительная (Selected in mockup) -->
+                <button type="button" id="btnFormatLongTerm" class="room-format-btn p-3.5 rounded-2xl bg-[#0C2B24] border-2 border-[#00D29D] text-left shadow-glowMint transition-all active:scale-[0.98]" data-format="long_term">
+                  <div class="flex items-center gap-2 mb-2 text-[#00E599]">
+                    <i data-lucide="folder" class="w-5 h-5"></i>
+                  </div>
+                  <h4 class="text-sm font-extrabold text-[#00E599]">Длительная</h4>
+                  <p class="text-[11px] text-mint-300/80 mt-0.5">Поездка, отпуск, быт</p>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. Название комнаты -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-2">Название комнаты</label>
+              <div class="flex items-center justify-between rounded-2xl border border-[#222E46] bg-[#151D2E] px-4 py-3.5 focus-within:border-mint-500/60 transition-all">
+                <input type="text" id="createRoomNameInput" placeholder="Например, Поездка в Казань" class="w-full bg-transparent text-sm font-bold text-white placeholder:text-slate-500 outline-none">
+                <i data-lucide="pencil" class="w-4 h-4 text-slate-400 shrink-0 ml-2"></i>
+              </div>
+            </div>
+
+            <!-- 3. Валюта и Взаиморасчет (Figma exact cards) -->
+            <div class="grid grid-cols-2 gap-3">
+              <!-- Валюта -->
+              <div id="roomCurrencySelectorCard" class="rounded-2xl border border-[#222E46] bg-[#151D2E] p-3.5 cursor-pointer hover:border-slate-500/50 transition-all">
+                <p class="text-xs text-slate-400">Валюта</p>
+                <div class="flex items-center justify-between mt-1">
+                  <span id="createRoomCurrencyDisplay" class="text-sm font-black text-white">RUB ( ₽ )</span>
+                  <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                </div>
+              </div>
+
+              <!-- Взаиморасчет -->
+              <div id="roomSettlementStrategyCard" class="rounded-2xl border border-[#222E46] bg-[#151D2E] p-3.5 cursor-pointer hover:border-mint-500/50 transition-all">
+                <p class="text-xs text-slate-400">Взаиморасчет</p>
+                <div class="flex items-center justify-between mt-1">
+                  <span id="createRoomStrategyDisplay" class="text-sm font-black text-[#00E599]">Мин. переводов</span>
+                  <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-[#00E599]"></i>
+                </div>
+              </div>
+            </div>
+
+              <!-- Участники комнаты -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span id="createRoomMembersCountHeader" class="text-sm font-extrabold text-white">Участники (1)</span>
+              </div>
+
+              <!-- Список заполняется только приглашёнными участниками. -->
+              <div id="createRoomParticipantsList" class="rounded-2xl border border-[#222E46] bg-[#151D2E] divide-y divide-[#222E46]/60 overflow-hidden">
+                <!-- Creator (You) -->
+                <div class="flex items-center justify-between p-3.5">
+                  <div class="flex items-center gap-3">
+                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#00D29D] text-[#06281E] font-black text-xs">
+                      Я
+                    </span>
+                    <span class="text-xs font-bold text-white">Вы <span class="ml-1 font-medium text-slate-400">Создатель</span></span>
+                  </div>
+                  <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[#00D29D] text-[#06281E]">
+                    <i data-lucide="check" class="w-3.5 h-3.5 stroke-[3]"></i>
+                  </span>
+                </div>
+
+                </div>
+              </div>
+              <p class="mt-2 text-[11px] leading-relaxed text-slate-400">Других участников можно пригласить после создания комнаты.</p>
+
+            <!-- Sticky CTA Button (Figma exact mint) -->
+            <div class="pt-2">
+              <button type="submit" id="btnSubmitCreateRoomFigma" class="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#00D29D] py-3.5 text-sm font-black text-[#06281E] shadow-glowMint hover:bg-mint-500 active:scale-[0.98] transition-all">
+                Создать комнату →
+              </button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+
+      <!-- TOAST NOTIFICATION CONTAINER -->
+      <div id="toastContainer" class="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+92px)] z-[60] flex flex-col items-center gap-2 px-4"></div>
+
+    </div>
+  </div>
+
+  <script src="app.js?v=20260907-room-detail-icon-v1"></script>
+</body>
+</html>

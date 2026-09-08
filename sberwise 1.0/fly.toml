@@ -1,0 +1,26 @@
+﻿app = "sbersplit-app"
+primary_region = "fra"
+
+[build]
+
+[env]
+  PORT = "8899"
+  DATABASE_PATH = "/data/expenses.db"
+
+[http_service]
+  internal_port = 8899
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "20s"
+  method = "GET"
+  path = "/health"
+  timeout = "5s"
+
+[[mounts]]
+  source = "sqlite_data"
+  destination = "/data"

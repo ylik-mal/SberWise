@@ -1,0 +1,24 @@
+﻿version: '3.8'
+
+services:
+  sbersplit:
+    build: .
+    container_name: sbersplit_app
+    restart: unless-stopped
+    ports:
+      - "8899:8899"
+    volumes:
+      - ./data:/data
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - WEBAPP_URL=${WEBAPP_URL}
+      - DATABASE_PATH=/data/expenses.db
+      - PORT=8899
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8899/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
